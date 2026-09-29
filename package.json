@@ -1,0 +1,34 @@
+{
+  "name": "lab-report-electron",
+  "version": "1.0.0",
+  "description": "Desktop Electron application converted from the supplied laboratory report web application.",
+  "main": "main.js",
+  "author": "Niraj Amrutkar",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^38.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.nirajdev.labreport",
+    "productName": "Lab Report",
+    "files": [
+      "index.html",
+      "styles.css",
+      "renderer.js",
+      "main.js",
+      "preload.js"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  }
+}
