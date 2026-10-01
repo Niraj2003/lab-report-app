@@ -8,10 +8,27 @@ function fmtBSL(v){
   return isNaN(n)?v:n.toFixed(1);
 }
 
+function syncKetoneDefault(valueId,ketoneId){
+  const ketone=document.getElementById(ketoneId);
+  if(bsf(valueId)&&!ketone.value){
+    ketone.value='Absent';
+    ketone.dataset.autoAbsent='true';
+  } else if(!bsf(valueId)&&ketone.dataset.autoAbsent==='true'){
+    ketone.value='';
+    delete ketone.dataset.autoAbsent;
+  }
+}
+function bsKetoneChanged(id){
+  delete document.getElementById(id).dataset.autoAbsent;
+  bsSync();
+}
+
 function bsSync(){
+  syncKetoneDefault('bsf-r-val','bsf-r-ket');
+  syncKetoneDefault('bsf-f-val','bsf-f-ket');
+  syncKetoneDefault('bsf-p-val','bsf-p-ket');
   document.getElementById('bsr-name').textContent=toTitleCase(bsf('bsf-name'))||'—';autoShrinkName('bsr-name');
   document.getElementById('bsr-ref').textContent='     '+(bsf('bsf-ref')||'—');
-  document.getElementById('bsr-sex').textContent=document.getElementById('bsf-sex').value;
   document.getElementById('bsr-date').textContent=(document.getElementById('bsf-date')?.value)||today;
 
   const sections=[];
@@ -32,7 +49,9 @@ function bsSync(){
     const numVal = s.val ? fmtBSL(s.val) : '&#8230;&#8230;&#8230;&#8230;';
     const mgVal  = s.val ? 'mg/dl.)' : 'mg/dl.)';
     const urineVal  = s.usg || '&#8230;&#8230;&#8230;.';
-    const ketoneVal = s.ket || '&#8230;&#8230;&#8230;';
+    const ketoneVal = s.val
+      ? (s.ket || 'Absent')
+      : (s.ket && s.ket !== 'Absent' ? s.ket : '-');
 
     return `<div class="bs-section">
       <div class="bs-row1">
@@ -56,7 +75,7 @@ function bsSync(){
 
 function buildBSRec(){
   return{type:'bs',
-    name:bsf('bsf-name')||'Unknown',date:bsf('bsf-date'),sex:document.getElementById('bsf-sex').value,ref:bsf('bsf-ref'),
+    name:bsf('bsf-name')||'Unknown',date:bsf('bsf-date'),ref:bsf('bsf-ref'),
     rVal:bsf('bsf-r-val'),rUsg:bsf('bsf-r-usg'),rKet:bsf('bsf-r-ket'),
     fVal:bsf('bsf-f-val'),fUsg:bsf('bsf-f-usg'),fKet:bsf('bsf-f-ket'),
     pVal:bsf('bsf-p-val'),pUsg:bsf('bsf-p-usg'),pKet:bsf('bsf-p-ket'),
@@ -64,7 +83,8 @@ function buildBSRec(){
 }
 function loadBSRec(r){
   const f=(id,v)=>{if(v!==undefined&&document.getElementById(id))document.getElementById(id).value=v||'';};
-  f('bsf-name',r.name);f('bsf-sex',r.sex);f('bsf-ref',r.ref);
+  ['bsf-r-ket','bsf-f-ket','bsf-p-ket'].forEach(id=>delete document.getElementById(id).dataset.autoAbsent);
+  f('bsf-name',r.name);f('bsf-date',r.date);f('bsf-ref',r.ref);
   f('bsf-r-val',r.rVal);f('bsf-r-usg',r.rUsg);f('bsf-r-ket',r.rKet);
   f('bsf-f-val',r.fVal);f('bsf-f-usg',r.fUsg);f('bsf-f-ket',r.fKet);
   f('bsf-p-val',r.pVal);f('bsf-p-usg',r.pUsg);f('bsf-p-ket',r.pKet);
@@ -75,7 +95,7 @@ function loadBSRec(r){
 async function bsPrint(){
   if(!requireName('bsf-name'))return;
   try{await saveRec(buildBSRec());}catch(e){if(handleSaveError(e))return;}
-  printOnly('bs-report','A5');
+  printOnly('bs-report',getTabPageSize('bs','A5'));
 }
 const bsPrintStyle=document.createElement('style');
 document.head.appendChild(bsPrintStyle);
@@ -84,7 +104,6 @@ document.head.appendChild(bsPrintStyle);
 async function bsShare(){
   if(!requireName('bsf-name'))return;
   const btn=document.getElementById('bs-share-btn');const orig=btn.innerHTML;
-  if(typeof html2canvas==='undefined'){btn.innerHTML='⏳ Loading…';await new Promise((r,j)=>{h2cScript.addEventListener('load',r);h2cScript.addEventListener('error',j);});}
   btn.innerHTML='⏳ Preparing…';btn.disabled=true;
   try{
     const blob=await captureEl(document.getElementById('bs-report'));
@@ -97,6 +116,15 @@ async function bsShare(){
 /* ══ IndexedDB ══ */
 let db;
 const DB_NAME='pitrubhakta_lab', DB_VERSION=2, STORE='reports';
+let loadedRecordId=null, loadedRecordType=null, editSaveTimer=null;
+const EDITABLE_REPORT_FORMS={
+  sero:{form:'sero-form',date:'sf-date'},
+  haemo:{form:'haemo-form',date:'hf-date'},
+  bs:{form:'bs-form',date:'bsf-date'},
+  biochem:{form:'biochem-form',date:'bcf-date'},
+  crpra:{form:'crpra-form',date:'cf-date'},
+  bill:{form:'bill-form',date:'bf-date'}
+};
 function openDB(){
   return new Promise((res,rej)=>{
     const r=indexedDB.open(DB_NAME,DB_VERSION);
@@ -125,6 +153,50 @@ function saveRec(rec){
     r.onerror=e=>rej(e.target.error);
   });
 }
+function updateRec(rec){
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(STORE,'readwrite');
+    const request=tx.objectStore(STORE).put(rec);
+    request.onsuccess=()=>res(request.result);
+    request.onerror=e=>rej(e.target.error);
+  });
+}
+function saveLoadedRecordEdit(){
+  if(loadedRecordId==null||!loadedRecordType)return;
+  const builders={sero:buildSeroRec,haemo:buildHaemoRec,bs:buildBSRec,biochem:buildBiochemRec,crpra:buildCRPRARec,bill:buildBillRec};
+  const build=builders[loadedRecordType];
+  if(!build)return;
+  const record=build();
+  record.id=loadedRecordId;
+  record.date=fmtDate(new Date());
+  record.savedAt=new Date().toISOString();
+  updateRec(record).then(()=>showToast('Changes saved with today\'s date','#1a3a5c'))
+    .catch(error=>showToast('Could not save changes: '+error.message,'#dc2626'));
+}
+function flushLoadedRecordEdit(){
+  if(editSaveTimer){
+    clearTimeout(editSaveTimer);
+    editSaveTimer=null;
+    saveLoadedRecordEdit();
+  }
+}
+function handleLoadedRecordEdit(event){
+  const target=event.target;
+  if(!target?.matches?.('input,select,textarea,.btn-del-row'))return;
+  const config=EDITABLE_REPORT_FORMS[loadedRecordType];
+  if(loadedRecordId==null||!config||!target.closest('#'+config.form)||target.id==='bill-print-header')return;
+  document.getElementById(config.date).value=fmtDate(new Date());
+  if(editSaveTimer)clearTimeout(editSaveTimer);
+  editSaveTimer=setTimeout(()=>{
+    editSaveTimer=null;
+    saveLoadedRecordEdit();
+  },500);
+}
+document.addEventListener('input',handleLoadedRecordEdit,true);
+document.addEventListener('change',handleLoadedRecordEdit,true);
+document.addEventListener('click',event=>{
+  if(event.target.closest('.btn-del-row'))handleLoadedRecordEdit({target:event.target.closest('.btn-del-row')});
+},true);
 
 /* ══ Secret unlock — type secret code in any name field ══ */
 const _SECRET='GAURAV8485';
@@ -225,6 +297,9 @@ setVal('bcf-date',today);
 
 /* ══ Tab switching ══ */
 function switchMain(tab,btn){
+  flushLoadedRecordEdit();
+  loadedRecordId=null;
+  loadedRecordType=null;
   document.querySelectorAll('.main-tab-page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.main-tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('main-'+tab).classList.add('active');
@@ -269,7 +344,7 @@ async function showSug(inputId,sugId,type){
     const d=document.createElement('div');
     d.className='sug-item';
     const typeLbl=r.type==='sero'?'🔬':r.type==='haemo'?'🩸':r.type==='bs'?'🩺':r.type==='bill'?'🧾':r.type==='crpra'?'🧪':'🧬';
-    d.innerHTML=`<span>${r.name}</span><span class="sug-meta">${typeLbl} ${r.sex||''} · ${fmtDate(new Date(r.savedAt))}</span>`;
+    d.innerHTML=`<span>${r.name}</span><span class="sug-meta">${typeLbl} · ${fmtDate(new Date(r.savedAt))}</span>`;
     d.addEventListener('mousedown', e=>{
       e.preventDefault();
       if(type==='sero') loadSeroRec(r);
@@ -359,7 +434,6 @@ function seroSync(){
   document.getElementById('sr-name').textContent=toTitleCase(document.getElementById('sf-name').value.trim())||'—';
   autoShrinkName('sr-name');
   document.getElementById('sr-ref').textContent=document.getElementById('sf-ref').value.trim()||'—';
-  document.getElementById('sr-sex').textContent=document.getElementById('sf-sex').value;
   document.getElementById('sr-date').textContent=document.getElementById('sf-date').value;
   const hbsag=document.getElementById('sf-hbsag').value;
   const hbsagEl=document.getElementById('sr-hbsag');
@@ -392,8 +466,8 @@ function seroSync(){
   if(hcvEntry) hcvEntry.style.display=hcv==='NOT_TESTED'?'none':'';
 }
 
-function buildSeroRec(){return{type:'sero',name:document.getElementById('sf-name').value.trim()||'Unknown',date:document.getElementById('sf-date').value,sex:document.getElementById('sf-sex').value,ref:document.getElementById('sf-ref').value.trim(),hbsag:document.getElementById('sf-hbsag').value,hiv:document.getElementById('sf-hiv').value,hcv:document.getElementById('sf-hcv').value,savedAt:new Date().toISOString()};}
-function loadSeroRec(r){document.getElementById('sf-name').value=r.name;document.getElementById('sf-sex').value=r.sex;document.getElementById('sf-ref').value=r.ref;document.getElementById('sf-hbsag').value=r.hbsag;document.getElementById('sf-hiv').value=r.hiv;if(r.hcv)document.getElementById('sf-hcv').value=r.hcv;seroSync();}
+function buildSeroRec(){return{type:'sero',name:document.getElementById('sf-name').value.trim()||'Unknown',date:document.getElementById('sf-date').value,ref:document.getElementById('sf-ref').value.trim(),hbsag:document.getElementById('sf-hbsag').value,hiv:document.getElementById('sf-hiv').value,hcv:document.getElementById('sf-hcv').value,savedAt:new Date().toISOString()};}
+function loadSeroRec(r){document.getElementById('sf-name').value=r.name;document.getElementById('sf-date').value=r.date||today;document.getElementById('sf-ref').value=r.ref;document.getElementById('sf-hbsag').value=r.hbsag;document.getElementById('sf-hiv').value=r.hiv;if(r.hcv)document.getElementById('sf-hcv').value=r.hcv;seroSync();}
 
 /* ══ Smart print — only prints the specific report ══ */
 /* ══ Per-tab print margin settings ══ */
@@ -433,6 +507,17 @@ function saveMargins(tabKey,margins){
 
 const _printStyle=document.createElement('style');
 document.head.appendChild(_printStyle);
+
+function sendPrintDocument(printHTML,pageSize){
+  if(!window.electronAPI?.printReport)return false;
+  _printStyle.textContent='';
+  window.electronAPI.printReport(printHTML,pageSize).then(result=>{
+    if(!result.success&&result.failureReason&&!/cancel/i.test(result.failureReason)){
+      showToast(`Print failed: ${result.failureReason}`,'#dc2626');
+    }
+  }).catch(error=>showToast(`Print failed: ${error.message}`,'#dc2626'));
+  return true;
+}
 
 function printOnly(reportId, pageSize='A4'){
   const m=getMargins(reportId);
@@ -489,17 +574,7 @@ function printOnly(reportId, pageSize='A4'){
   const report=document.getElementById(reportId);
   const wrapper=document.createElement('div');
   wrapper.className='print-target-wrap';
-  const placeholder=document.createElement('span');
-  report.parentNode.insertBefore(placeholder,report);
-  wrapper.appendChild(report);
-  document.body.appendChild(wrapper);
-
-  const restoreReport=()=>{
-    try{placeholder.parentNode.insertBefore(report,placeholder);}catch(e){}
-    try{placeholder.remove();}catch(e){}
-    try{wrapper.remove();}catch(e){}
-    _printStyle.textContent='';
-  };
+  wrapper.appendChild(report.cloneNode(true));
 
   // Collect all CSS from the page
   let allCSS='';
@@ -536,6 +611,8 @@ ${allCSS}
 </style>
 </head><body>${wrapper.outerHTML}</body></html>`;
 
+  if(sendPrintDocument(printHTML,pageSize))return;
+
   // Use hidden iframe — most reliable cross-browser approach
   const iframe = document.createElement('iframe');
   iframe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;border:none;opacity:0;pointer-events:none';
@@ -546,20 +623,17 @@ ${allCSS}
   iframeDoc.write(printHTML);
   iframeDoc.close();
 
+  const cleanup=()=>{
+    if(iframe.parentNode)iframe.remove();
+    _printStyle.textContent='';
+  };
   setTimeout(()=>{
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
-    iframe.contentWindow.addEventListener('afterprint',()=>{
-      iframe.remove();
-      restoreReport();
-      setTimeout(()=>window.location.reload(),300);
-    });
-    // Fallback remove
-    setTimeout(()=>{
-      if(document.body.contains(iframe)) iframe.remove();
-      restoreReport();
-    },30000);
+    const printWindow=iframe.contentWindow;
+    printWindow.addEventListener('afterprint',cleanup,{once:true});
+    printWindow.focus();
+    printWindow.print();
   },800);
+  setTimeout(cleanup,30000);
 }
 
 async function seroPrint(){
@@ -697,17 +771,8 @@ function haemoSync(){
   document.getElementById('haemo-table-body').innerHTML=html;
 }
 
-/* ══ ESR hint update ══ */
-function updateESRHint(){
-  const sex=document.getElementById('hf-sex').value;
-  const hint=document.getElementById('hf-esr-hint');
-  if(!hint)return;
-  if(sex==='Female') hint.textContent='Female: 0–20 mm at end of first Hr.';
-  else hint.textContent='Male: 0–8 mm at end of first Hr.';
-}
-
 function buildHaemoRec(){
-  return{type:'haemo',name:hv('hf-name')||'Unknown',date:hv('hf-date'),sex:document.getElementById('hf-sex').value,
+  return{type:'haemo',name:hv('hf-name')||'Unknown',date:hv('hf-date'),
     ref:hv('hf-ref'),hb:hv('hf-hb'),wbc:hv('hf-wbc'),esr:hv('hf-esr'),neut:hv('hf-neut'),lymp:hv('hf-lymp'),
     eosi:hv('hf-eosi'),mono:hv('hf-mono'),baso:hv('hf-baso'),plat:hv('hf-plat'),platUnit:document.getElementById('hf-plat-unit')?.value||'lakhs',
     sugar:hv('hf-sugar'),alb:hv('hf-alb'),usg:hv('hf-usg'),mic:hv('hf-mic'),
@@ -716,7 +781,7 @@ function buildHaemoRec(){
 }
 function loadHaemoRec(r){
   const f=(id,v)=>{if(v!==undefined&&document.getElementById(id))document.getElementById(id).value=v;};
-  f('hf-name',r.name);f('hf-sex',r.sex);f('hf-ref',r.ref);f('hf-hb',r.hb);f('hf-wbc',r.wbc);f('hf-esr',r.esr);
+  f('hf-name',r.name);f('hf-date',r.date||today);f('hf-ref',r.ref);f('hf-hb',r.hb);f('hf-wbc',r.wbc);f('hf-esr',r.esr);
   f('hf-neut',r.neut);f('hf-lymp',r.lymp);f('hf-eosi',r.eosi);f('hf-mono',r.mono);f('hf-baso',r.baso);
   f('hf-plat',r.plat);if(r.platUnit&&document.getElementById('hf-plat-unit'))document.getElementById('hf-plat-unit').value=r.platUnit;f('hf-sugar',r.sugar);f('hf-alb',r.alb);f('hf-usg',r.usg);f('hf-mic',r.mic);
   f('hf-bt',r.bt);f('hf-ct',r.ct);f('hf-hcv',r.hcv);f('hf-aat',r.aat);f('hf-hiv',r.hiv);
@@ -774,7 +839,7 @@ async function haemoPrint(){
   if(!requireName('hf-name'))return;
   if(!diffIsValid()){alert('⚠️ W.B.C. Differential total must equal exactly 100%.\n\nCurrent total: '+['hf-neut','hf-lymp','hf-eosi','hf-mono','hf-baso'].reduce((s,id)=>s+(parseFloat(document.getElementById(id).value)||0),0)+'%\n\nPlease correct before printing.');return;}
   try{await saveRec(buildHaemoRec());}catch(e){if(handleSaveError(e))return;}
-  printOnly('haemo-report','A4');
+  printOnly('haemo-report',getTabPageSize('haemo','A4'));
 }
 
 /* ══ Title Case for name inputs ══ */
@@ -826,11 +891,8 @@ function requireName(inputId){
 }
 
 /* ══ html2canvas share ══ */
-const h2cScript=document.createElement('script');
-h2cScript.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-document.head.appendChild(h2cScript);
-
 async function captureEl(el){
+  await document.fonts.ready;
   const prev=el.style.minWidth;el.style.minWidth='740px';
   const c=await html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#fff'});
   el.style.minWidth=prev;
@@ -850,7 +912,6 @@ async function doShare(blob,name){
 async function seroShare(){
   if(!requireName('sf-name'))return;
   const btn=document.getElementById('sero-share-btn');const orig=btn.innerHTML;
-  if(typeof html2canvas==='undefined'){btn.innerHTML='⏳ Loading…';await new Promise((r,j)=>{h2cScript.addEventListener('load',r);h2cScript.addEventListener('error',j);});}
   btn.innerHTML='⏳ Preparing…';btn.disabled=true;
   try{const blob=await captureEl(document.getElementById('sero-report'));await saveRec(buildSeroRec());await doShare(blob,hv('sf-name'));}
   catch(e){if(e.name!=='AbortError')alert('Could not share: '+e.message);}
@@ -860,7 +921,6 @@ async function haemoShare(){
   if(!requireName('hf-name'))return;
   if(!diffIsValid()){alert('⚠️ W.B.C. Differential total must equal exactly 100%.\n\nPlease correct before sharing.');return;}
   const btn=document.getElementById('haemo-share-btn');const orig=btn.innerHTML;
-  if(typeof html2canvas==='undefined'){btn.innerHTML='⏳ Loading…';await new Promise((r,j)=>{h2cScript.addEventListener('load',r);h2cScript.addEventListener('error',j);});}
   btn.innerHTML='⏳ Preparing…';btn.disabled=true;
   try{const blob=await captureEl(document.getElementById('haemo-report'));await saveRec(buildHaemoRec());await doShare(blob,hv('hf-name'));}
   catch(e){if(e.name!=='AbortError')alert('Could not share: '+e.message);}
@@ -868,10 +928,17 @@ async function haemoShare(){
 }
 
 /* ══ HISTORY RENDER ══ */
+const selectedHistoryRecords=new Map();
+function getSelectedHistoryRecords(containerId){
+  if(!selectedHistoryRecords.has(containerId))selectedHistoryRecords.set(containerId,new Set());
+  return selectedHistoryRecords.get(containerId);
+}
+
 async function renderHistory(typeFilter,containerId){
   const wrap=document.getElementById(containerId);
   const searchId=containerId+'-search';
   const filterId=containerId+'-filters';
+  const selected=getSelectedHistoryRecords(containerId);
 
   // Build shell once
   if(!wrap.querySelector('.history-header')){
@@ -887,6 +954,10 @@ async function renderHistory(typeFilter,containerId){
         <h2>${title}</h2>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
           <input type="text" class="history-search" id="${searchId}" placeholder="🔍 Search by name..." oninput="renderHistory('${typeFilter}','${containerId}')">
+          <div class="history-selection-actions">
+            <span id="${containerId}-selected-count">0 selected</span>
+            <button class="btn-delete-selected" id="${containerId}-delete-selected" onclick="deleteSelectedHistory('${typeFilter}','${containerId}')" disabled>Delete selected</button>
+          </div>
           ${backupBtns}
         </div>
       </div>
@@ -921,15 +992,6 @@ async function renderHistory(typeFilter,containerId){
           <option value="today">Today</option>
           <option value="week">This Week</option>
           <option value="month">This Month</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>Sex</label>
-        <select class="filter-select" id="${filterId}-sex" onchange="renderHistory('${typeFilter}','${containerId}')">
-          <option value="">All</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
         </select>
       </div>
       <div class="filter-group">
@@ -978,7 +1040,6 @@ async function renderHistory(typeFilter,containerId){
   const query=(document.getElementById(searchId)?.value||'').trim().toLowerCase();
   const fFrom=document.getElementById(`${filterId}-from`)?.value||'';
   const fTo=document.getElementById(`${filterId}-to`)?.value||'';
-  const fSex=document.getElementById(`${filterId}-sex`)?.value||'';
   const fRef=document.getElementById(`${filterId}-ref`)?.value||'';
   const fType=document.getElementById(`${filterId}-type`)?.value||'';
   const fHbsag=document.getElementById(`${filterId}-hbsag`)?.value||'';
@@ -1007,7 +1068,6 @@ async function renderHistory(typeFilter,containerId){
   if(query)   filtered=filtered.filter(r=>r.name.toLowerCase().includes(query));
   if(fromDate) filtered=filtered.filter(r=>{const d=parseDMY(r.date);return d&&d>=fromDate;});
   if(toDate)   filtered=filtered.filter(r=>{const d=parseDMY(r.date);return d&&d<=toDate;});
-  if(fSex)    filtered=filtered.filter(r=>r.sex===fSex);
   if(fRef)    filtered=filtered.filter(r=>r.ref===fRef);
   if(fType)   filtered=filtered.filter(r=>r.type===fType);
   if(fHbsag)  filtered=filtered.filter(r=>r.hbsag===fHbsag);
@@ -1018,7 +1078,7 @@ async function renderHistory(typeFilter,containerId){
   });
 
   // Active filter count indicator
-  const activeCount=[query,fFrom,fTo,fSex,fRef,fType,fHbsag,fHiv].filter(Boolean).length;
+  const activeCount=[query,fFrom,fTo,fRef,fType,fHbsag,fHiv].filter(Boolean).length;
   const countEl=document.getElementById(`${filterId}-count`);
   if(countEl) countEl.textContent=activeCount>0?`${filtered.length} of ${all.length} records`:`${all.length} records`;
 
@@ -1060,17 +1120,21 @@ async function renderHistory(typeFilter,containerId){
   `;
 
   const tbl=document.getElementById(containerId+'-table');
-  if(filtered.length===0){tbl.innerHTML=`<div class="empty-history"><div>${activeCount>0?'No records match your filters.':'No records found.'}</div></div>`;return;}
+  if(filtered.length===0){
+    tbl.innerHTML=`<div class="empty-history"><div>${activeCount>0?'No records match your filters.':'No records found.'}</div></div>`;
+    updateHistorySelectionUI(containerId,[]);
+    return;
+  }
 
   const badge=v=>v==='POSITIVE'?`<span class="badge badge-pos">POSITIVE</span>`:`<span class="badge badge-neg">NEGATIVE</span>`;
   const hivBadge=v=>v&&v.startsWith('REACTIVE')?`<span class="badge badge-rx">REACTIVE</span>`:`<span class="badge badge-nrx">NON-REACTIVE</span>`;
   const typeBadge=t=>t==='sero'?`<span class="badge badge-sero">Serology</span>`:t==='haemo'?`<span class="badge badge-haemo">Haemogram</span>`:t==='bs'?`<span class="badge" style="background:#d1fae5;color:#065f46">Blood Sugar</span>`:t==='bill'?`<span class="badge" style="background:#fef3c7;color:#92400e">Bill</span>`:t==='crpra'?`<span class="badge" style="background:#ede9fe;color:#5b21b6">CRP/RA</span>`:`<span class="badge" style="background:#e0f2fe;color:#0369a1">Bio-Chem</span>`;
 
   tbl.innerHTML=`<table class="history-table"><thead><tr>
+    <th class="history-select-col"><input class="history-select-all" type="checkbox" aria-label="Select all visible records" onchange="toggleVisibleHistorySelection('${containerId}',this.checked)"></th>
     <th>#</th>${typeFilter==='all'?'<th>Type</th>':''}
     ${typeFilter==='bill'?'<th>Bill No.</th>':''}
     <th>Patient Name</th><th>Date</th>
-    ${typeFilter!=='bill'?'<th>Sex</th>':''}
     <th>Ref. By</th>
     ${typeFilter==='sero'?'<th>HBsAg</th><th>HIV</th>':''}
     ${typeFilter==='haemo'?'<th>HB</th><th>WBC</th><th>Platelets</th>':''}
@@ -1082,11 +1146,11 @@ async function renderHistory(typeFilter,containerId){
     <th>Saved At</th><th>Actions</th>
   </tr></thead><tbody>
   ${filtered.map((r,i)=>`<tr>
+      <td class="history-select-col"><input class="history-row-select" type="checkbox" aria-label="Select record" data-record-id="${r.id}" ${selected.has(r.id)?'checked':''} onchange="toggleHistorySelection('${containerId}',${r.id},this.checked)"></td>
     <td>${filtered.length-i}</td>
     ${typeFilter==='all'?`<td>${typeBadge(r.type)}</td>`:''}
     ${typeFilter==='bill'?`<td><strong>#${r.billNo||'—'}</strong></td>`:''}
     <td><strong>${r.name}</strong></td><td>${r.date}</td>
-    ${typeFilter!=='bill'?`<td>${r.sex||'—'}</td>`:''}
     <td>${r.ref||'—'}</td>
     ${typeFilter==='sero'?`<td>${r.hbsag?badge(r.hbsag):'—'}</td><td>${r.hiv?hivBadge(r.hiv):'—'}</td>`:''}
     ${typeFilter==='haemo'?`<td>${r.hb||'—'}</td><td>${r.wbc||'—'}</td><td>${r.plat||'—'}</td>`:''}
@@ -1104,12 +1168,75 @@ async function renderHistory(typeFilter,containerId){
     }</td>`:''}
     <td>${fmtDT(r.savedAt)}</td>
     <td>
-      <button class="btn-load" onclick='loadAndSwitch(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Load</button>
-      <button class="btn-del" onclick="confirmDel(${r.id},'${typeFilter}','${containerId}')">✕</button>
-      // TODO: Add button to print directly with that data 
+      <div class="history-actions">
+        <button class="btn-load" onclick='loadAndSwitch(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Load</button>
+        <button class="btn-preview" onclick='previewSavedRecord(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Preview</button>
+        <button class="btn-print-history" onclick='printSavedRecord(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Print</button>
+        <button class="btn-del" onclick="confirmDel(${r.id},'${typeFilter}','${containerId}')">✕</button>
+      </div>
     </td>
   </tr>`).join('')}
   </tbody></table>`;
+  updateHistorySelectionUI(containerId,filtered.map(r=>r.id));
+}
+
+function updateHistorySelectionUI(containerId,visibleIds){
+  const selected=getSelectedHistoryRecords(containerId);
+  const count=selected.size;
+  const countEl=document.getElementById(`${containerId}-selected-count`);
+  const deleteButton=document.getElementById(`${containerId}-delete-selected`);
+  if(countEl)countEl.textContent=`${count} selected`;
+  if(deleteButton)deleteButton.disabled=count===0;
+
+  const selectedVisible=visibleIds.filter(id=>selected.has(id)).length;
+  const selectAll=document.querySelector(`#${containerId}-table .history-select-all`);
+  if(selectAll){
+    selectAll.checked=visibleIds.length>0&&selectedVisible===visibleIds.length;
+    selectAll.indeterminate=selectedVisible>0&&selectedVisible<visibleIds.length;
+  }
+}
+
+function toggleHistorySelection(containerId,id,checked){
+  const selected=getSelectedHistoryRecords(containerId);
+  if(checked)selected.add(id);
+  else selected.delete(id);
+  const visibleIds=[...document.querySelectorAll(`#${containerId}-table .history-row-select`)].map(el=>Number(el.dataset.recordId));
+  updateHistorySelectionUI(containerId,visibleIds);
+}
+
+function toggleVisibleHistorySelection(containerId,checked){
+  const selected=getSelectedHistoryRecords(containerId);
+  document.querySelectorAll(`#${containerId}-table .history-row-select`).forEach(el=>{
+    const id=Number(el.dataset.recordId);
+    el.checked=checked;
+    if(checked)selected.add(id);
+    else selected.delete(id);
+  });
+  const visibleIds=[...document.querySelectorAll(`#${containerId}-table .history-row-select`)].map(el=>Number(el.dataset.recordId));
+  updateHistorySelectionUI(containerId,visibleIds);
+}
+
+async function deleteSelectedHistory(typeFilter,containerId){
+  const selected=getSelectedHistoryRecords(containerId);
+  const ids=[...selected];
+  if(!ids.length)return;
+  if(!confirm(`Delete ${ids.length} selected record${ids.length===1?'':'s'}? This cannot be undone.`))return;
+
+  try{
+    await new Promise((resolve,reject)=>{
+      const tx=db.transaction(STORE,'readwrite');
+      const store=tx.objectStore(STORE);
+      ids.forEach(id=>store.delete(id));
+      tx.oncomplete=resolve;
+      tx.onerror=()=>reject(tx.error);
+      tx.onabort=()=>reject(tx.error||new Error('Bulk delete was interrupted.'));
+    });
+    selected.clear();
+    await renderHistory(typeFilter,containerId);
+    showToast(`${ids.length} record${ids.length===1?'':'s'} deleted`,'#dc2626');
+  }catch(error){
+    alert('Could not delete selected records: '+error.message);
+  }
 }
 
 function applyQuickDate(filterId,typeFilter,containerId){
@@ -1135,7 +1262,7 @@ function applyQuickDate(filterId,typeFilter,containerId){
 }
 
 function clearFilters(filterId,typeFilter,containerId){
-  ['from','to','sex','ref','type','hbsag','hiv','quick'].forEach(k=>{
+  ['from','to','ref','type','hbsag','hiv','quick'].forEach(k=>{
     const el=document.getElementById(`${filterId}-${k}`);
     if(el)el.value='';
   });
@@ -1145,13 +1272,16 @@ function clearFilters(filterId,typeFilter,containerId){
 }
 
 function loadAndSwitch(r){
+  flushLoadedRecordEdit();
+  loadedRecordId=r.id??null;
+  loadedRecordType=r.type;
   document.querySelectorAll('.main-tab-page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.main-tab-btn').forEach(b=>b.classList.remove('active'));
-  // New order: 0=sero,1=haemo,2=bs,3=biochem,4=crpra,5=bill,6=history
+  // Navbar order: 0=haemo,1=bs,2=sero,3=biochem,4=crpra,5=bill
   if(r.type==='sero'){
     loadSeroRec(r);
     document.getElementById('main-serology').classList.add('active');
-    document.querySelectorAll('.main-tab-btn')[0].classList.add('active');
+    document.querySelectorAll('.main-tab-btn')[2].classList.add('active');
     document.getElementById('sero-form').classList.add('active');
     document.getElementById('sero-hist').classList.remove('active');
     document.querySelectorAll('#main-serology .sub-tab-btn')[0].classList.add('active');
@@ -1159,7 +1289,7 @@ function loadAndSwitch(r){
   } else if(r.type==='haemo'){
     loadHaemoRec(r);
     document.getElementById('main-haemogram').classList.add('active');
-    document.querySelectorAll('.main-tab-btn')[1].classList.add('active');
+    document.querySelectorAll('.main-tab-btn')[0].classList.add('active');
     document.getElementById('haemo-form').classList.add('active');
     document.getElementById('haemo-hist').classList.remove('active');
     document.querySelectorAll('#main-haemogram .sub-tab-btn')[0].classList.add('active');
@@ -1167,7 +1297,7 @@ function loadAndSwitch(r){
   } else if(r.type==='bs'){
     loadBSRec(r);
     document.getElementById('main-bloodsugar').classList.add('active');
-    document.querySelectorAll('.main-tab-btn')[2].classList.add('active');
+    document.querySelectorAll('.main-tab-btn')[1].classList.add('active');
     document.getElementById('bs-form').classList.add('active');
     document.getElementById('bs-hist').classList.remove('active');
     document.querySelectorAll('#main-bloodsugar .sub-tab-btn')[0].classList.add('active');
@@ -1198,8 +1328,76 @@ function loadAndSwitch(r){
     document.querySelectorAll('#main-bill .sub-tab-btn')[1].classList.remove('active');
   }
 }
+function previewSavedRecord(r){
+  const previews={
+    sero:{report:'sero-report',build:buildSeroRec,load:loadSeroRec,label:'Serology'},
+    haemo:{report:'haemo-report',build:buildHaemoRec,load:loadHaemoRec,label:'Haemogram'},
+    bs:{report:'bs-report',build:buildBSRec,load:loadBSRec,label:'Blood Sugar'},
+    biochem:{report:'biochem-report',build:buildBiochemRec,load:loadBiochemRec,label:'Bio-Chemistry'},
+    crpra:{report:'crpra-report',build:buildCRPRARec,load:loadCRPRARec,label:'CRP/RA'},
+    bill:{report:'bill-report',build:buildBillRec,load:loadBillRec,label:'Bill'}
+  };
+  const config=previews[r.type];
+  if(!config)return;
+
+  document.querySelector('.report-preview-close')?.click();
+  const trigger=document.activeElement;
+  const currentRecord=config.build();
+  let reportCopy;
+  try{
+    config.load(r);
+    reportCopy=document.getElementById(config.report).cloneNode(true);
+  } finally {
+    config.load(currentRecord);
+  }
+  reportCopy.removeAttribute('id');
+  reportCopy.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
+
+  const overlay=document.createElement('div');
+  overlay.className='report-preview-overlay';
+  overlay.setAttribute('role','presentation');
+  overlay.innerHTML=`
+    <section class="report-preview-dialog" role="dialog" aria-modal="true" aria-label="Report preview">
+      <header class="report-preview-toolbar">
+        <div><h2 class="report-preview-title"></h2><div class="report-preview-date"></div></div>
+        <button class="report-preview-close" type="button" aria-label="Close preview" title="Close preview">✕</button>
+      </header>
+      <div class="report-preview-body"></div>
+    </section>`;
+  overlay.querySelector('.report-preview-title').textContent=`${config.label} · ${r.name||'Patient'}`;
+  overlay.querySelector('.report-preview-date').textContent=r.date||'';
+  overlay.querySelector('.report-preview-body').appendChild(reportCopy);
+
+  const previousOverflow=document.body.style.overflow;
+  const close=()=>{
+    document.removeEventListener('keydown',onKeydown);
+    document.body.style.overflow=previousOverflow;
+    overlay.remove();
+    if(trigger?.isConnected)trigger.focus();
+  };
+  const onKeydown=event=>{if(event.key==='Escape')close();};
+  overlay.addEventListener('click',event=>{if(event.target===overlay)close();});
+  overlay.querySelector('.report-preview-close').addEventListener('click',close);
+  document.addEventListener('keydown',onKeydown);
+  document.body.style.overflow='hidden';
+  document.body.appendChild(overlay);
+  overlay.querySelector('.report-preview-close').focus();
+}
+function printSavedRecord(r){
+  loadAndSwitch(r);
+  if(r.type==='sero') printOnly('sero-report',getTabPageSize('sero','A4'));
+  else if(r.type==='haemo') printOnly('haemo-report',getTabPageSize('haemo','A4'));
+  else if(r.type==='bs') printOnly('bs-report',getTabPageSize('bs','A5'));
+  else if(r.type==='biochem') printOnly('biochem-report',getTabPageSize('biochem','A4'));
+  else if(r.type==='crpra') printOnly('crpra-report',getTabPageSize('crpra','A4'));
+  else if(r.type==='bill') printBillOnly('bill-report',getTabPageSize('bill','A4'),document.getElementById('bill-print-header')?.checked||false);
+}
 async function confirmDel(id,typeFilter,containerId){
-  if(confirm('Delete this record?')){await delRec(id);renderHistory(typeFilter,containerId);}
+  if(confirm('Delete this record?')){
+    await delRec(id);
+    getSelectedHistoryRecords(containerId).delete(id);
+    renderHistory(typeFilter,containerId);
+  }
 }
 
 /* ══ Populate BT/CT dropdowns ══ */
@@ -1399,8 +1597,7 @@ function billSync(){
   const ref=document.getElementById('bf-ref').value.trim();
   document.getElementById('br-ref').textContent=ref||'—';
   const age=document.getElementById('bf-age').value.trim();
-  const gender=document.getElementById('bf-gender').value;
-  document.getElementById('br-age').textContent=age?(age+' / '+gender):gender;
+  document.getElementById('br-age').textContent=age||'—';
   document.getElementById('br-contact').textContent=document.getElementById('bf-contact').value.trim()||'';
   const loc=document.getElementById('bf-location').value.trim();
   document.getElementById('br-location').textContent=loc;
@@ -1448,7 +1645,6 @@ function buildBillRec(){
     date:document.getElementById('bf-date').value,
     ref:document.getElementById('bf-ref').value.trim(),
     age:document.getElementById('bf-age').value.trim(),
-    gender:document.getElementById('bf-gender').value,
     contact:document.getElementById('bf-contact').value.trim(),
     location:document.getElementById('bf-location').value.trim(),
     items:[...billRows.filter(r=>r.test.trim()||r.price)],
@@ -1459,11 +1655,14 @@ function buildBillRec(){
 }
 
 function loadBillRec(r){
+  currentBillNo=r.billNo||currentBillNo;
+  document.getElementById('bf-billno').value=currentBillNo;
+  document.getElementById('bf-date').value=r.date||today;
+  document.getElementById('br-billno').textContent=currentBillNo;
   if(r.items!==undefined){
     document.getElementById('bf-name').value=r.name||'';
     document.getElementById('bf-ref').value=r.ref||'';
     document.getElementById('bf-age').value=r.age||'';
-    if(r.gender)document.getElementById('bf-gender').value=r.gender;
     document.getElementById('bf-contact').value=r.contact||'';
     document.getElementById('bf-location').value=r.location||'';
     document.getElementById('bf-discount').value=r.discount||0;
@@ -1473,7 +1672,6 @@ function loadBillRec(r){
     document.getElementById('bf-name').value=r.name||'';
     document.getElementById('bf-ref').value=r.ref||'';
     document.getElementById('bf-age').value=r.age||'';
-    if(r.gender)document.getElementById('bf-gender').value=r.gender;
     document.getElementById('bf-contact').value=r.contact||'';
     document.getElementById('bf-location').value=r.location||'';
   }
@@ -1502,23 +1700,15 @@ async function billPrint(){
   currentBillNo=await getNextBillNo();
   document.getElementById('bf-billno').value=currentBillNo;
   const withHeader=document.getElementById('bill-print-header')?.checked||false;
-  printBillOnly('bill-report','A4',withHeader);
+  printBillOnly('bill-report',getTabPageSize('bill','A4'),withHeader);
 }
 
 /* ══ Bill-specific print — handles header toggle ══ */
 function printBillOnly(reportId, pageSize, withHeader){
-  const baseMargins=getMargins(reportId);
-  // When printing with header: top margin = 0 so header starts at page edge
-  // When printing without header: use the saved settings margins
-  const m=withHeader?{...baseMargins, top:0}:baseMargins;
+  const m=getMargins(reportId);
   const isA5=pageSize==='A5';
 
-  // Show or hide the bill-top header and noheader meta elements
   const billReport=document.getElementById(reportId);
-  const billTop=billReport.querySelector('.bill-top');
-  const noheaderMetas=billReport.querySelectorAll('.bill-noheader-meta');
-  if(billTop) billTop.setAttribute('data-print-show', withHeader?'1':'0');
-  noheaderMetas.forEach(el=>el.setAttribute('data-print-show', withHeader?'0':'1'));
 
   _printStyle.textContent=`
     @media print {
@@ -1543,17 +1733,12 @@ function printBillOnly(reportId, pageSize, withHeader){
   const report=document.getElementById(reportId);
   const wrapper=document.createElement('div');
   wrapper.className='print-target-wrap';
-  const placeholder=document.createElement('span');
-  report.parentNode.insertBefore(placeholder,report);
-  wrapper.appendChild(report);
-  document.body.appendChild(wrapper);
-
-  const restoreReport=()=>{
-    try{placeholder.parentNode.insertBefore(report,placeholder);}catch(e){}
-    try{placeholder.remove();}catch(e){}
-    try{wrapper.remove();}catch(e){}
-    _printStyle.textContent='';
-  };
+  const reportCopy=report.cloneNode(true);
+  const billTopCopy=reportCopy.querySelector('.bill-top');
+  const noheaderMetaCopies=reportCopy.querySelectorAll('.bill-noheader-meta');
+  if(billTopCopy)billTopCopy.setAttribute('data-print-show',withHeader?'1':'0');
+  noheaderMetaCopies.forEach(el=>el.setAttribute('data-print-show',withHeader?'0':'1'));
+  wrapper.appendChild(reportCopy);
 
   let allCSS='';
   try{
@@ -1583,6 +1768,8 @@ ${allCSS}
 </style>
 </head><body>${wrapper.outerHTML}</body></html>`;
 
+  if(sendPrintDocument(printHTML,pageSize))return;
+
   const iframe=document.createElement('iframe');
   iframe.style.cssText='position:fixed;top:0;left:0;width:0;height:0;border:none;opacity:0;pointer-events:none';
   document.body.appendChild(iframe);
@@ -1591,26 +1778,23 @@ ${allCSS}
   iframeDoc.write(printHTML);
   iframeDoc.close();
 
+  const cleanup=()=>{
+    if(iframe.parentNode)iframe.remove();
+    _printStyle.textContent='';
+  };
   setTimeout(()=>{
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
-    iframe.contentWindow.addEventListener('afterprint',()=>{
-      iframe.remove();
-      restoreReport();
-      setTimeout(()=>window.location.reload(),300);
-    });
-    setTimeout(()=>{
-      if(document.body.contains(iframe))iframe.remove();
-      restoreReport();
-    },30000);
+    const printWindow=iframe.contentWindow;
+    printWindow.addEventListener('afterprint',cleanup,{once:true});
+    printWindow.focus();
+    printWindow.print();
   },800);
+  setTimeout(cleanup,30000);
 }
 
 /* ══ Bill Share ══ */
 async function billShare(){
   if(!requireName('bf-name'))return;
   const btn=document.getElementById('bill-share-btn');const orig=btn.innerHTML;
-  if(typeof html2canvas==='undefined'){btn.innerHTML='⏳ Loading…';await new Promise((r,j)=>{h2cScript.addEventListener('load',r);h2cScript.addEventListener('error',j);});}
   btn.innerHTML='⏳ Preparing…';btn.disabled=true;
   try{
     const withHeader=document.getElementById('bill-print-header')?.checked||false;
@@ -1639,7 +1823,6 @@ function crpraSync(){
   // patient info
   document.getElementById('cr-name').textContent=cfv('cf-name')||'—';autoShrinkName('cr-name');
   document.getElementById('cr-ref').textContent  = cfv('cf-ref')||'—';
-  document.getElementById('cr-sex').textContent  = document.getElementById('cf-sex').value+'/0 Years.';
   document.getElementById('cr-date').textContent = (document.getElementById('cf-date')?.value)||today;
 
   const crp = cfv('cf-crp');
@@ -1680,7 +1863,6 @@ function buildCRPRARec(){
     type:'crpra',
     name: cfv('cf-name')||'Unknown',
     date: cfv('cf-date'),
-    sex:  document.getElementById('cf-sex').value,
     ref:  cfv('cf-ref'),
     crp:  cfv('cf-crp'),
     ra:   cfv('cf-ra'),
@@ -1690,7 +1872,7 @@ function buildCRPRARec(){
 
 function loadCRPRARec(r){
   const f=(id,v)=>{if(v!==undefined&&document.getElementById(id))document.getElementById(id).value=v||'';};
-  f('cf-name',r.name); f('cf-sex',r.sex); f('cf-ref',r.ref);
+  f('cf-name',r.name); f('cf-date',r.date||today); f('cf-ref',r.ref);
   f('cf-crp',r.crp);   f('cf-ra',r.ra);
   crpraSync();
 }
@@ -1698,13 +1880,12 @@ function loadCRPRARec(r){
 async function crpraPrint(){
   if(!requireName('cf-name'))return;
   try{await saveRec(buildCRPRARec());}catch(e){if(handleSaveError(e))return;}
-  printOnly('crpra-report','A4');
+  printOnly('crpra-report',getTabPageSize('crpra','A4'));
 }
 
 async function crpraShare(){
   if(!requireName('cf-name'))return;
   const btn=document.getElementById('crpra-share-btn');const orig=btn.innerHTML;
-  if(typeof html2canvas==='undefined'){btn.innerHTML='⏳ Loading…';await new Promise((r,j)=>{h2cScript.addEventListener('load',r);h2cScript.addEventListener('error',j);});}
   btn.innerHTML='⏳ Preparing…';btn.disabled=true;
   try{
     const blob=await captureEl(document.getElementById('crpra-report'));
@@ -1738,7 +1919,6 @@ const BC_TESTS=[
 function biochemSync(){
   document.getElementById('bcr-name').textContent=bcfv('bcf-name')||'—';autoShrinkName('bcr-name');
   document.getElementById('bcr-ref').textContent  = bcfv('bcf-ref')||'—';
-  document.getElementById('bcr-sex').textContent  = document.getElementById('bcf-sex').value;
   document.getElementById('bcr-date').textContent = (document.getElementById('bcf-date')?.value)||today;
 
   // Build rows — skip empty fields, skip parent if no children filled
@@ -1791,7 +1971,6 @@ function buildBiochemRec(){
     type:'biochem',
     name:bcfv('bcf-name')||'Unknown',
     date:bcfv('bcf-date'),
-    sex:document.getElementById('bcf-sex').value,
     ref:bcfv('bcf-ref'),
     urea:bcfv('bcf-urea'), creat:bcfv('bcf-creat'), uric:bcfv('bcf-uric'),
     bilTotal:bcfv('bcf-bil-total'), bilDirect:bcfv('bcf-bil-direct'), bilIndirect:bcfv('bcf-bil-indirect'),
@@ -1804,7 +1983,7 @@ function buildBiochemRec(){
 
 function loadBiochemRec(r){
   const f=(id,v)=>{const el=document.getElementById(id);if(el&&v!==undefined)el.value=v||'';};
-  f('bcf-name',r.name); f('bcf-sex',r.sex); f('bcf-ref',r.ref);
+  f('bcf-name',r.name); f('bcf-date',r.date||today); f('bcf-ref',r.ref);
   f('bcf-urea',r.urea);   f('bcf-creat',r.creat);       f('bcf-uric',r.uric);
   f('bcf-bil-total',r.bilTotal); f('bcf-bil-direct',r.bilDirect); f('bcf-bil-indirect',r.bilIndirect);
   f('bcf-sgot',r.sgot);  f('bcf-sgpt',r.sgpt);
@@ -1816,13 +1995,12 @@ function loadBiochemRec(r){
 async function biochemPrint(){
   if(!requireName('bcf-name'))return;
   try{await saveRec(buildBiochemRec());}catch(e){if(handleSaveError(e))return;}
-  printOnly('biochem-report','A4');
+  printOnly('biochem-report',getTabPageSize('biochem','A4'));
 }
 
 async function biochemShare(){
   if(!requireName('bcf-name'))return;
   const btn=document.getElementById('biochem-share-btn');const orig=btn.innerHTML;
-  if(typeof html2canvas==='undefined'){btn.innerHTML='⏳ Loading…';await new Promise((r,j)=>{h2cScript.addEventListener('load',r);h2cScript.addEventListener('error',j);});}
   btn.innerHTML='⏳ Preparing…';btn.disabled=true;
   try{
     const blob=await captureEl(document.getElementById('biochem-report'));
@@ -1871,8 +2049,8 @@ function buildSettingsCards(){
           <span class="margin-slider-val" id="msv-${tab.key}-${side}">${side==='top'?m.top:side==='bottom'?m.bottom:side==='left'?m.left:m.right}mm</span>
         </div>
       `).join('')}
-      <button class="btn-save-margins" onclick="saveTabMargins('${tab.key}')">💾 Save</button>
-      <button class="btn-reset-margins" onclick="resetTabMargins('${tab.key}')">↺ Reset to Default</button>
+      <button class="btn-save-margins" onclick="saveTabMargins('${tab.key}')">💾 Save Settings</button>
+      <button class="btn-reset-margins" onclick="resetTabMargins('${tab.key}')">↺ Reset Settings</button>
       <div class="settings-saved" id="settings-saved-${tab.key}"></div>
     `;
     grid.appendChild(card);
@@ -1887,6 +2065,8 @@ function getTabPageSize(key,defaultSize){
 }
 
 function saveTabMargins(key){
+  const pageSize=document.getElementById(`ms-${key}-pagesize`)?.value;
+  if(pageSize)saveTabPageSize(key,pageSize);
   const margins={
     top:   parseInt(document.getElementById(`ms-${key}-top`).value),
     bottom:parseInt(document.getElementById(`ms-${key}-bottom`).value),
@@ -1901,6 +2081,10 @@ function saveTabMargins(key){
 
 function resetTabMargins(key){
   const def=TAB_DEFAULT_MARGINS[key]||DEFAULT_MARGINS;
+  const defaultPageSize=MARGIN_TABS.find(tab=>tab.key===key)?.pageSize||'A4';
+  saveTabPageSize(key,defaultPageSize);
+  const pageSizeSelect=document.getElementById(`ms-${key}-pagesize`);
+  if(pageSizeSelect)pageSizeSelect.value=defaultPageSize;
   saveMargins(key,{...def});
   ['top','bottom','left','right'].forEach(side=>{
     const slider=document.getElementById(`ms-${key}-${side}`);
@@ -1909,6 +2093,6 @@ function resetTabMargins(key){
     if(slider){slider.value=def2[side];val.textContent=def2[side]+'mm';}
   });
   const msg=document.getElementById('settings-saved-'+key);
-  msg.textContent='↺ Reset to default (15mm)';
+  msg.textContent=`Settings reset: ${defaultPageSize} paper, default margins`;
   setTimeout(()=>msg.textContent='',2000);
 }

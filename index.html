@@ -25,9 +25,6 @@
     <button class="main-tab-btn" onclick="switchMain('settings',this)" id="settings-tab-btn">⚙️ Settings</button>
     <button class="main-tab-btn" onclick="switchMain('templates',this)" style="display:none">✏️ Templates</button>
   </div>
-  <a href="https://share.google/xzanhNS0bLS9xpeQw" target="_blank" rel="noopener noreferrer"
-     title="About Developer"
-     style="display:none"></a>
 </header>
 
 <!-- ════ DEVELOPER INFO POPUP ════ -->
@@ -74,14 +71,7 @@
             <div class="name-suggestions" id="sero-sug"></div>
           </div>
         </div>
-        <div class="field-row">
-          <div class="field" style="display:none"><label>Date</label><input type="text" id="sf-date" readonly></div>
-          <div class="field"><label>Sex</label>
-            <select id="sf-sex" onchange="seroSync()">
-              <option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option>
-            </select>
-          </div>
-        </div>
+        <div style="display:none"><input type="text" id="sf-date" readonly></div>
         <div class="field"><label>Ref. By Dr.</label>
           <input type="text" id="sf-ref" list="sref-options" placeholder="Select or type..." value="Sharda Netralay" oninput="seroSync()">
           <datalist id="sref-options"><option value="None"><option value="Self"><option value="Sharda Netralay"></datalist>
@@ -141,7 +131,7 @@
           <div class="report-body">
             <table class="meta-table"><colgroup><col class="c-label"><col class="c-colon"><col class="c-value"><col class="c-gap"><col class="c-rlabel"><col class="c-rcolon"><col class="c-rvalue"></colgroup>
               <tr><td class="meta-label">Patient's Name</td><td class="meta-colon">:</td><td class="meta-value" id="sr-name">—</td><td></td><td class="meta-label">Date</td><td class="meta-colon">:</td><td class="meta-value" id="sr-date">—</td></tr>
-              <tr><td class="meta-label">Ref. By Dr.</td><td class="meta-colon">:</td><td class="meta-value" id="sr-ref">—</td><td></td><td class="meta-label">Sex</td><td class="meta-colon">:</td><td class="meta-value" id="sr-sex">Male</td></tr>
+              <tr><td class="meta-label">Ref. By Dr.</td><td class="meta-colon">:</td><td class="meta-value" id="sr-ref">—</td><td colspan="4"></td></tr>
             </table>
             <hr class="report-hr">
             <div class="report-title">Serology Report</div>
@@ -195,10 +185,7 @@
             <div class="name-suggestions" id="haemo-sug"></div>
           </div>
         </div>
-        <div class="field-row">
-          <div class="field" style="display:none"><label>Date</label><input type="text" id="hf-date" readonly></div>
-          <div style="display:none"><select id="hf-sex"><option value="Male">Male</option><option value="Female">Female</option></select></div>
-        </div>
+        <div style="display:none"><input type="text" id="hf-date" readonly></div>
         <div class="field"><label>Ref. By Dr.</label>
           <input type="text" id="hf-ref" list="href-options" placeholder="Select or type..." value="Sharda Netralay" oninput="haemoSync()">
           <datalist id="href-options"><option value="None"><option value="Self"><option value="Sharda Netralay"></datalist>
@@ -388,14 +375,7 @@
             <div class="name-suggestions" id="bs-sug"></div>
           </div>
         </div>
-        <div class="field-row">
-          <div class="field" style="display:none"><label>Date</label><input type="text" id="bsf-date" readonly></div>
-          <div class="field"><label>Sex</label>
-            <select id="bsf-sex" onchange="bsSync()">
-              <option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option>
-            </select>
-          </div>
-        </div>
+        <div style="display:none"><input type="text" id="bsf-date" readonly></div>
         <div class="field"><label>Ref. By Dr.</label>
           <input type="text" id="bsf-ref" list="bsref-opts" placeholder="Select or type..." value="Sharda Netralay" oninput="bsSync()">
           <datalist id="bsref-opts"><option value="None"><option value="Self"><option value="Sharda Netralay"></datalist>
@@ -414,7 +394,7 @@
               </select>
             </div>
             <div class="field"><label>Ketone</label>
-              <select id="bsf-r-ket" onchange="bsSync()">
+              <select id="bsf-r-ket" onchange="bsKetoneChanged('bsf-r-ket')">
                 <option value="">--</option><option value="Absent">Absent</option><option value="Present">Present</option>
                 <option value="(+)">(+)</option><option value="(++)">(++)</option><option value="Trace">Trace</option>
               </select>
@@ -433,8 +413,8 @@
               </select>
             </div>
             <div class="field"><label>Ketone</label>
-              <select id="bsf-f-ket" onchange="bsSync()">
-                <option value="">--</option><option value="Absent" selected>Absent</option><option value="Present">Present</option>
+              <select id="bsf-f-ket" onchange="bsKetoneChanged('bsf-f-ket')">
+                <option value="">--</option><option value="Absent">Absent</option><option value="Present">Present</option>
                 <option value="(+)">(+)</option><option value="(++)">(++)</option><option value="Trace">Trace</option>
               </select>
             </div>
@@ -452,7 +432,7 @@
               </select>
             </div>
             <div class="field"><label>Ketone</label>
-              <select id="bsf-p-ket" onchange="bsSync()">
+              <select id="bsf-p-ket" onchange="bsKetoneChanged('bsf-p-ket')">
                 <option value="">--</option><option value="Absent">Absent</option><option value="Present">Present</option>
                 <option value="(+)">(+)</option><option value="(++)">(++)</option><option value="Trace">Trace</option>
               </select>
@@ -491,7 +471,6 @@
             <div class="bs-report-title">Blood Sugar Report</div>
             <div class="bs-test-header">Test</div>
 
-            <div id="bsr-sex" style="display:none"></div>
             <div id="bs-sections"></div>
 
             <div class="bs-footer-row">
@@ -540,19 +519,9 @@
           <input type="text" id="bf-ref" list="bref-opts" placeholder="Select or type..." oninput="billSync()">
           <datalist id="bref-opts"><option value="None"><option value="Self"><option value="Sharda Netralay"></datalist>
         </div>
-        <div class="field-row">
-          <div class="field">
-            <label>Age</label>
-            <input type="text" id="bf-age" placeholder="e.g. 49 Yrs" oninput="billSync()">
-          </div>
-          <div class="field">
-            <label>Gender</label>
-            <select id="bf-gender" onchange="billSync()">
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
+        <div class="field">
+          <label>Age</label>
+          <input type="text" id="bf-age" placeholder="e.g. 49 Yrs" oninput="billSync()">
         </div>
         <div class="field">
           <label>Contact No.</label>
@@ -644,7 +613,7 @@
               </div>
               <div class="bill-to-row" id="br-age-row" style="justify-content:space-between;align-items:baseline">
                 <div style="display:flex;align-items:baseline;flex:1">
-                  <span class="bill-to-lbl">Age/Gender</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-age">—</span>
+                  <span class="bill-to-lbl">Age</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-age">—</span>
                 </div>
                 <div class="bill-noheader-meta" style="display:flex;align-items:baseline;gap:6px;flex-shrink:0;margin-left:12px">
                   <span style="font-size:10pt;font-weight:700;white-space:nowrap">Date</span>
@@ -721,16 +690,7 @@
             <div class="name-suggestions" id="crpra-sug"></div>
           </div>
         </div>
-        <div class="field-row">
-          <div class="field" style="display:none"><label>Date</label><input type="text" id="cf-date" readonly></div>
-          <div class="field"><label>Sex</label>
-            <select id="cf-sex" onchange="crpraSync()">
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-        </div>
+        <div style="display:none"><input type="text" id="cf-date" readonly></div>
         <div class="field">
           <label>Ref. By Dr.</label>
           <input type="text" id="cf-ref" list="cref-opts" placeholder="Select or type..." oninput="crpraSync()">
@@ -806,8 +766,7 @@
                 <td class="meta-label">Ref. By Dr.</td><td class="meta-colon">:</td>
                 <td class="meta-value" id="cr-ref">—</td>
                 <td></td>
-                <td class="meta-label">Sex/Age</td><td class="meta-colon">:</td>
-                <td class="meta-value" id="cr-sex">Male/0 Years.</td>
+                <td colspan="4"></td>
               </tr>
             </table>
 
@@ -873,16 +832,7 @@
             <div class="name-suggestions" id="biochem-sug"></div>
           </div>
         </div>
-        <div class="field-row">
-          <div class="field" style="display:none"><label>Date</label><input type="text" id="bcf-date" readonly></div>
-          <div class="field"><label>Sex</label>
-            <select id="bcf-sex" onchange="biochemSync()">
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-        </div>
+        <div style="display:none"><input type="text" id="bcf-date" readonly></div>
         <div class="field">
           <label>Ref. By Dr.</label>
           <input type="text" id="bcf-ref" list="bcref-opts" placeholder="Select or type..." oninput="biochemSync()">
@@ -958,8 +908,7 @@
                 <td class="meta-label">Ref. By Dr.</td><td class="meta-colon">:</td>
                 <td class="meta-value" id="bcr-ref">—</td>
                 <td></td>
-                <td class="meta-label">Sex</td><td class="meta-colon">:</td>
-                <td class="meta-value" id="bcr-sex">Male</td>
+                <td colspan="4"></td>
               </tr>
             </table>
 
@@ -1015,6 +964,7 @@
     <div class="settings-grid" id="settings-grid"></div>
   </div>
 </div>
+<script src="node_modules/html2canvas/dist/html2canvas.min.js"></script>
 <script src="renderer.js"></script>
 </body>
 </html>

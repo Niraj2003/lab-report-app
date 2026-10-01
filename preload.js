@@ -1,3 +1,5 @@
-// Intentionally minimal.
-// The application currently uses browser APIs/localStorage only,
-// so no Node/Electron API needs to be exposed to the renderer.
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('electronAPI', {
+	printReport: (html, pageSize) => ipcRenderer.invoke('lab:print-report', { html, pageSize })
+});
