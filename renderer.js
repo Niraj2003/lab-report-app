@@ -837,6 +837,7 @@ function diffIsValid(){
 
 async function haemoPrint(){
   if(!requireName('hf-name'))return;
+  if(!requireHaemoSugar())return;
   if(!diffIsValid()){alert('⚠️ W.B.C. Differential total must equal exactly 100%.\n\nCurrent total: '+['hf-neut','hf-lymp','hf-eosi','hf-mono','hf-baso'].reduce((s,id)=>s+(parseFloat(document.getElementById(id).value)||0),0)+'%\n\nPlease correct before printing.');return;}
   try{await saveRec(buildHaemoRec());}catch(e){if(handleSaveError(e))return;}
   printOnly('haemo-report',getTabPageSize('haemo','A4'));
@@ -889,6 +890,20 @@ function requireName(inputId){
   }
   return true;
 }
+function requireHaemoSugar(){
+  const el=document.getElementById('hf-sugar');
+  if(el&&el.value.trim())return true;
+  if(el){
+    el.style.borderColor='#dc2626';
+    el.style.background='#fff5f5';
+    el.focus();
+    el.addEventListener('input',()=>{
+      el.style.borderColor='';el.style.background='';
+    },{once:true});
+  }
+  alert('⚠️ Blood Sugar Random is required before printing or sharing.');
+  return false;
+}
 
 /* ══ html2canvas share ══ */
 async function captureEl(el){
@@ -919,6 +934,7 @@ async function seroShare(){
 }
 async function haemoShare(){
   if(!requireName('hf-name'))return;
+  if(!requireHaemoSugar())return;
   if(!diffIsValid()){alert('⚠️ W.B.C. Differential total must equal exactly 100%.\n\nPlease correct before sharing.');return;}
   const btn=document.getElementById('haemo-share-btn');const orig=btn.innerHTML;
   btn.innerHTML='⏳ Preparing…';btn.disabled=true;
@@ -1172,7 +1188,6 @@ async function renderHistory(typeFilter,containerId){
         <button class="btn-load" onclick='loadAndSwitch(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Load</button>
         <button class="btn-preview" onclick='previewSavedRecord(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Preview</button>
         <button class="btn-print-history" onclick='printSavedRecord(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Print</button>
-        <button class="btn-del" onclick="confirmDel(${r.id},'${typeFilter}','${containerId}')">✕</button>
       </div>
     </td>
   </tr>`).join('')}
