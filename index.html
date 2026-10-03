@@ -1,970 +1,1388 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title></title>
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<header class="app-header">
-  <div class="app-header-left">
-    <button onclick="document.getElementById('dev-popup-overlay').classList.add('dev-open')" title="About Developer" style="display:flex;align-items:center;background:none;border:none;cursor:pointer;padding:0;color:#fff">
-      <svg width="24" height="24" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="6" fill="#fff" fill-opacity=".12"/><path d="M8 10h16M8 16h10M8 22h13" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-    </button>
-    <h1></h1>
-  </div>
-  <div class="main-tab-bar">
-    <button class="main-tab-btn active" onclick="switchMain('haemogram',this)">🩸 Haemogram</button>
-    <button class="main-tab-btn" onclick="switchMain('bloodsugar',this)">🩺 Blood Sugar</button>
-    <button class="main-tab-btn" onclick="switchMain('serology',this)">🔬 Serology</button>
-    <button class="main-tab-btn" onclick="switchMain('biochem',this)">🧬 Bio-Chemistry</button>
-    <button class="main-tab-btn" onclick="switchMain('crpra',this)">🧪 CRP/RA</button>
-    <button class="main-tab-btn" onclick="switchMain('bill',this)">🧾 Bill</button>
-    <button class="main-tab-btn" onclick="switchMain('allhistory',this)">📊 History</button>
-    <button class="main-tab-btn" onclick="switchMain('settings',this)" id="settings-tab-btn">⚙️ Settings</button>
-    <button class="main-tab-btn" onclick="switchMain('templates',this)" style="display:none">✏️ Templates</button>
-  </div>
-</header>
 
-<!-- ════ DEVELOPER INFO POPUP ════ -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pitrubhakt-Lab-Report</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-
-<div class="dev-overlay" id="dev-popup-overlay" onclick="if(event.target===this)this.classList.remove('dev-open')">
-  <div class="dev-popup">
-    <button class="dev-close" onclick="document.getElementById('dev-popup-overlay').classList.remove('dev-open')">✕</button>
-    <div class="dev-head">
-      <div class="dev-name">Niraj Amrutkar</div>
-    </div>
-    <div class="dev-body">
-      <div class="dev-field">
-        <div class="dev-ico">🧑</div>
-        <div><div class="dev-flbl">Name</div><div class="dev-fval">Niraj</div></div>
+  <body>
+    <header class="app-header">
+      <div class="app-header-left">
+        <button onclick="document.getElementById('dev-popup-overlay').classList.add('dev-open')" title="About Developer" style="
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            color: #fff;
+          ">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="6" fill="#fff" fill-opacity=".12" />
+            <path d="M8 10h16M8 16h10M8 22h13" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        <h1>Pitrubhakt-Lab-Report</h1>
       </div>
-      <div class="dev-field">
-        <div class="dev-ico">📞</div>
-        <div><div class="dev-flbl">Contact Number</div><div class="dev-fval">9960641238</div></div>
+      <div class="main-tab-bar">
+        <button class="main-tab-btn active" onclick="switchMain('haemogram', this)">
+          Haemogram
+        </button>
+        <button class="main-tab-btn" onclick="switchMain('bloodsugar', this)">
+          Blood Sugar
+        </button>
+        <button class="main-tab-btn" onclick="switchMain('serology', this)">Serology</button>
+        <button class="main-tab-btn" onclick="switchMain('biochem', this)">Bio-Chemistry</button>
+        <button class="main-tab-btn" onclick="switchMain('crpra', this)">CRP/RA</button>
+        <button class="main-tab-btn" onclick="switchMain('bill', this)">Bill</button>
+        <button class="main-tab-btn" onclick="switchMain('allhistory', this)">History</button>
+        <button class="main-tab-btn" onclick="switchMain('settings', this)" id="settings-tab-btn">
+          Settings
+        </button>
+        <button class="main-tab-btn" onclick="switchMain('templates', this)" style="display: none">
+          Templates
+        </button>
       </div>
-      <button class="dev-ok" onclick="document.getElementById('dev-popup-overlay').classList.remove('dev-open')">OK</button>
+    </header>
+
+    <!-- ════ DEVELOPER INFO POPUP ════ -->
+
+    <div class="dev-overlay" id="dev-popup-overlay" onclick="if (event.target === this) this.classList.remove('dev-open');">
+      <div class="dev-popup">
+        <button class="dev-close" onclick="document.getElementById('dev-popup-overlay').classList.remove('dev-open')">
+          ✕
+        </button>
+        <div class="dev-head">
+          <div class="dev-name">Niraj Amrutkar</div>
+        </div>
+        <div class="dev-body">
+          <div class="dev-field">
+            <div class="dev-ico"></div>
+            <div>
+              <div class="dev-flbl">Name</div>
+              <div class="dev-fval">Niraj</div>
+            </div>
+          </div>
+          <div class="dev-field">
+            <div class="dev-ico"></div>
+            <div>
+              <div class="dev-flbl">Contact Number</div>
+              <div class="dev-fval">9960641238</div>
+            </div>
+          </div>
+          <button class="dev-ok" onclick="document.getElementById('dev-popup-overlay').classList.remove('dev-open')">
+            OK
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      SEROLOGY MAIN TAB
 ════════════════════════════════════════ -->
-<div id="main-serology" class="main-tab-page">
-  <div class="sub-tab-bar">
-    <button class="sub-tab-btn active" onclick="switchSub('sero','form',this)">📋 Form</button>
-    <button class="sub-tab-btn" onclick="switchSub('sero','hist',this)">🕒 History</button>
-  </div>
+    <div id="main-serology" class="main-tab-page">
+      <div class="sub-tab-bar">
+        <button class="sub-tab-btn active" onclick="switchSub('sero', 'form', this)">
+          Form
+        </button>
+        <button class="sub-tab-btn" onclick="switchSub('sero', 'hist', this)">History</button>
+      </div>
 
-  <!-- Serology Form -->
-  <div id="sero-form" class="sub-tab-page active">
-    <div class="workspace">
-      <aside class="form-panel">
-        <h2>Patient Details</h2>
-        <div class="field"><label>Patient Name</label>
-          <div class="name-wrap">
-            <input type="text" id="sf-name" placeholder="Enter name" autocomplete="off" oninput="seroSync();showSug('sf-name','sero-sug','sero')" onblur="hideSug('sero-sug')">
-            <div class="name-suggestions" id="sero-sug"></div>
-          </div>
-        </div>
-        <div style="display:none"><input type="text" id="sf-date" readonly></div>
-        <div class="field"><label>Ref. By Dr.</label>
-          <input type="text" id="sf-ref" list="sref-options" placeholder="Select or type..." value="Sharda Netralay" oninput="seroSync()">
-          <datalist id="sref-options"><option value="None"><option value="Self"><option value="Sharda Netralay"></datalist>
-        </div>
-
-        <h2>Test Results</h2>
-        <div class="result-group">
-          <h3>1) HBsAg Antibody</h3>
-          <div class="field"><label>Result</label>
-            <select id="sf-hbsag" onchange="seroSync()"><option value="NEGATIVE">NEGATIVE</option><option value="POSITIVE">POSITIVE</option><option value="NOT_TESTED" selected>Not Tested</option></select>
-          </div>
-        </div>
-        <div class="result-group">
-          <h3>2) HIV Antibody (HIV-1 &amp; HIV-2)</h3>
-          <div class="field"><label>Result</label>
-            <select id="sf-hiv" onchange="seroSync()">
-              <option value="NON-REACTIVE for HIV I &amp; II">NON-REACTIVE</option>
-              <option value="REACTIVE for HIV-I &amp; NON-REACTIVE For HIV-II">REACTIVE for HIV-I &amp; NON-REACTIVE For HIV-II</option>
-              <option value="REACTIVE for HIV II &amp; NON-REACTIVE for HIV I">REACTIVE for HIV II &amp; NON-REACTIVE for HIV I</option>
-              <option value="REACTIVE for HIV I &amp; II">REACTIVE for HIV I &amp; II</option>
-              <option value="NOT_TESTED" selected>Not Tested</option>
-            </select>
-          </div>
-        </div>
-        <div class="result-group">
-          <h3>3) HCV Test</h3>
-          <div class="field"><label>Result</label>
-            <select id="sf-hcv" onchange="seroSync()"><option value="NEGATIVE">NEGATIVE</option><option value="POSITIVE">POSITIVE</option><option value="NOT_TESTED" selected>Not Tested</option></select>
-          </div>
-        </div>
-        <div class="btn-row">
-          <button class="btn-print" onclick="seroPrint()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print
-          </button>
-          <button class="btn-share" id="sero-share-btn" onclick="seroShare()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share
-          </button>
-        </div>
-      </aside>
-      <main class="preview-panel">
-        <h2>Live Preview</h2>
-        <div class="report-scaler"><div class="report" id="sero-report">
-          <!-- LAB HEADER -->
-          <div class="lab-header">
-            <div class="lab-header-top">
-              <div class="microscope-circle">
-                <svg viewBox="0 0 100 100" fill="none"><rect x="44" y="8" width="12" height="22" rx="4" fill="#2d3a6e"/><rect x="40" y="28" width="20" height="8" rx="3" fill="#2d3a6e"/><rect x="44" y="34" width="12" height="28" rx="3" fill="#3a4a80"/><rect x="46" y="60" width="8" height="14" rx="3" fill="#2d3a6e"/><rect x="28" y="72" width="44" height="6" rx="3" fill="#3a5a8c"/><ellipse cx="50" cy="88" rx="26" ry="6" fill="#2d3a6e"/><rect x="38" y="36" width="8" height="40" rx="3" fill="#4a6aa0"/><ellipse cx="34" cy="55" rx="7" ry="5" fill="#5a7ab0"/><ellipse cx="34" cy="67" rx="5" ry="4" fill="#7a9ac0"/></svg>
+      <!-- Serology Form -->
+      <div id="sero-form" class="sub-tab-page active">
+        <div class="workspace">
+          <aside class="form-panel">
+            <h2>Patient Details</h2>
+            <div class="field">
+              <label>Patient Name</label>
+              <div class="name-wrap">
+                <input type="text" id="sf-name" placeholder="Enter name" autocomplete="off" oninput="
+                    seroSync();
+                    showSug('sf-name', 'sero-sug', 'sero');
+                  " onblur="hideSug('sero-sug')" />
+                <div class="name-suggestions" id="sero-sug"></div>
               </div>
-              <div class="lab-title-block"><div class="lab-name"></div><div class="lab-sub">Computerised</div></div>
             </div>
-            <div class="lab-header-bottom">
-              <div class="lab-address">117/B, Income Tax Colony, Infront of Sharda Netralay,<br>Nakane Road, Deopur, Dhule- 424002<br><span class="phone"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>: 9422707425</span></div>
-              <div class="lab-doctor">Mrs. Manjusha P. Pitrubhakta<br>B.Sc.,D.M.L.T. (Pune)<br><span class="reg">Reg. No.: PGD/MLT/0005/2021</span></div>
+            <div style="display: none"><input type="text" id="sf-date" readonly /></div>
+            <div class="field">
+              <label>Ref. By Dr.</label>
+              <input type="text" id="sf-ref" list="sref-options" placeholder="Select or type..." value="Sharda Netralay" oninput="seroSync()" />
+              <datalist id="sref-options">
+                <option value="None"></option>
+                <option value="Self"></option>
+                <option value="Sharda Netralay"></option>
+              </datalist>
             </div>
-          </div>
-          <!-- BODY -->
-          <div class="report-body">
-            <table class="meta-table"><colgroup><col class="c-label"><col class="c-colon"><col class="c-value"><col class="c-gap"><col class="c-rlabel"><col class="c-rcolon"><col class="c-rvalue"></colgroup>
-              <tr><td class="meta-label">Patient's Name</td><td class="meta-colon">:</td><td class="meta-value" id="sr-name">—</td><td></td><td class="meta-label">Date</td><td class="meta-colon">:</td><td class="meta-value" id="sr-date">—</td></tr>
-              <tr><td class="meta-label">Ref. By Dr.</td><td class="meta-colon">:</td><td class="meta-value" id="sr-ref">—</td><td colspan="4"></td></tr>
-            </table>
-            <hr class="report-hr">
-            <div class="report-title">Serology Report</div>
-            <div class="col-headers"><span>Test Name</span><span>Result</span></div>
-            <div class="test-entry">
-              <div class="test-row"><span class="test-name">1) HBsAg Antibody</span><span class="test-result" id="sr-hbsag">NEGATIVE</span></div>
-              <div class="test-method" id="sr-hbsag-method"></div>
-              <div class="test-note" id="sr-hbsag-note"></div>
+
+            <h2>Test Results</h2>
+            <div class="result-group">
+              <h3>1) HBsAg Antibody</h3>
+              <div class="field">
+                <label>Result</label>
+                <select id="sf-hbsag" onchange="seroSync()">
+                  <option value="NEGATIVE">NEGATIVE</option>
+                  <option value="POSITIVE">POSITIVE</option>
+                  <option value="NOT_TESTED" selected>Not Tested</option>
+                </select>
+              </div>
             </div>
-            <div class="test-entry">
-              <div class="test-row"><span class="test-name">2) HIV Antibody (HIV-1 &amp; HIV-2) :</span><span class="test-result" id="sr-hiv">NON-REACTIVE for HIV I &amp; II</span></div>
-              <div class="test-method" id="sr-hiv-method"></div>
-              <div class="test-note" id="sr-hiv-note"></div>
+            <div class="result-group">
+              <h3>2) HIV Antibody (HIV-1 &amp; HIV-2)</h3>
+              <div class="field">
+                <label>Result</label>
+                <select id="sf-hiv" onchange="seroSync()">
+                  <option value="NON-REACTIVE for HIV I &amp; II">NON-REACTIVE</option>
+                  <option value="REACTIVE for HIV-I &amp; NON-REACTIVE For HIV-II">
+                    REACTIVE for HIV-I &amp; NON-REACTIVE For HIV-II
+                  </option>
+                  <option value="REACTIVE for HIV II &amp; NON-REACTIVE for HIV I">
+                    REACTIVE for HIV II &amp; NON-REACTIVE for HIV I
+                  </option>
+                  <option value="REACTIVE for HIV I &amp; II">REACTIVE for HIV I &amp; II</option>
+                  <option value="NOT_TESTED" selected>Not Tested</option>
+                </select>
+              </div>
             </div>
-            <div class="test-entry" id="sr-hcv-entry">
-              <div class="test-row"><span class="test-name">3) HCV Test</span><span class="test-result" id="sr-hcv">NEGATIVE</span></div>
-              <div class="test-method">[ Immunochromatography Method ]</div>
+            <div class="result-group">
+              <h3>3) HCV Test</h3>
+              <div class="field">
+                <label>Result</label>
+                <select id="sf-hcv" onchange="seroSync()">
+                  <option value="NEGATIVE">NEGATIVE</option>
+                  <option value="POSITIVE">POSITIVE</option>
+                  <option value="NOT_TESTED" selected>Not Tested</option>
+                </select>
+              </div>
             </div>
-            <div style="margin-top:7.5em"></div>
-            <div class="signature-area">SIGNATURE</div>
-          </div>
-          <div class="lab-footer"><div class="footer-ornament">&#x1F4D6;&#x2764;&#x1F4D6;</div><div class="footer-bar"><div class="footer-text">These are only reading based on technical analysis and no opinion is indicated therefore said reading's<br>should please be got certified by pathologist before using the same for diagnosis and treatment</div></div></div>
-        </div></div>
-      </main>
+            <div class="btn-row">
+              <button class="btn-print" onclick="seroPrint()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <rect x="6" y="14" width="12" height="8" />
+                </svg>Print
+              </button>
+              <button class="btn-share" id="sero-share-btn" onclick="seroShare()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>Share
+              </button>
+            </div>
+          </aside>
+          <main class="preview-panel">
+            <h2>Live Preview</h2>
+            <div class="report-scaler">
+              <div class="report" id="sero-report">
+                <!-- LAB HEADER -->
+
+                <div class="report-body">
+                  <table class="meta-table">
+                    <colgroup>
+                      <col class="c-label" />
+                      <col class="c-colon" />
+                      <col class="c-value" />
+                      <col class="c-gap" />
+                      <col class="c-rlabel" />
+                      <col class="c-rcolon" />
+                      <col class="c-rvalue" />
+                    </colgroup>
+                    <tr>
+                      <td class="meta-label">Patient's Name</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="sr-name">—</td>
+                      <td></td>
+                      <td class="meta-label">Date</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="sr-date">—</td>
+                    </tr>
+                    <tr>
+                      <td class="meta-label">Ref. By Dr.</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="sr-ref">—</td>
+                      <td colspan="4"></td>
+                    </tr>
+                  </table>
+                  <hr class="report-hr" />
+                  <div class="report-title">Serology Report</div>
+                  <div class="col-headers"><span>Test Name</span><span>Result</span></div>
+
+                  <div class="test-entry">
+                    <div class="test-row">
+                      <span class="test-name">1) HBsAg Antibody</span><span class="test-result" id="sr-hbsag">NEGATIVE</span>
+                    </div>
+                    <div class="test-method" id="sr-hbsag-method"></div>
+                    <div class="test-note" id="sr-hbsag-note"></div>
+                  </div>
+                  <div class="test-entry">
+                    <div class="test-row">
+                      <span class="test-name">2) HIV Antibody (HIV-1 &amp; HIV-2) :</span><span class="test-result" id="sr-hiv">NON-REACTIVE for HIV I &amp; II</span>
+                    </div>
+                    <div class="test-method" id="sr-hiv-method"></div>
+                    <div class="test-note" id="sr-hiv-note"></div>
+                  </div>
+                  <div class="test-entry" id="sr-hcv-entry">
+                    <div class="test-row">
+                      <span class="test-name">3) HCV Test</span><span class="test-result" id="sr-hcv">NEGATIVE</span>
+                    </div>
+                    <div class="test-method">[ Immunochromatography Method ]</div>
+                  </div>
+                  <div style="margin-top: 7.5em"></div>
+                  <div class="signature-area">SIGNATURE</div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- Serology History -->
+      <div id="sero-hist" class="sub-tab-page">
+        <div class="history-page" id="sero-hist-content"></div>
+      </div>
     </div>
-  </div>
 
-  <!-- Serology History -->
-  <div id="sero-hist" class="sub-tab-page">
-    <div class="history-page" id="sero-hist-content"></div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      HAEMOGRAM MAIN TAB
 ════════════════════════════════════════ -->
-<div id="main-haemogram" class="main-tab-page active">
-  <div class="sub-tab-bar">
-    <button class="sub-tab-btn active" onclick="switchSub('haemo','form',this)">📋 Form</button>
-    <button class="sub-tab-btn" onclick="switchSub('haemo','hist',this)">🕒 History</button>
-  </div>
+    <div id="main-haemogram" class="main-tab-page active">
+      <div class="sub-tab-bar">
+        <button class="sub-tab-btn active" onclick="switchSub('haemo', 'form', this)">
+          Form
+        </button>
+        <button class="sub-tab-btn" onclick="switchSub('haemo', 'hist', this)">History</button>
+      </div>
 
-  <!-- Haemogram Form -->
-  <div id="haemo-form" class="sub-tab-page active">
-    <div class="workspace">
-      <aside class="form-panel">
-        <h2>Patient Details</h2>
-        <div class="field"><label>Patient Name</label>
-          <div class="name-wrap">
-            <input type="text" id="hf-name" placeholder="Enter name" autocomplete="off" oninput="haemoSync();showSug('hf-name','haemo-sug','haemo')" onblur="hideSug('haemo-sug')">
-            <div class="name-suggestions" id="haemo-sug"></div>
-          </div>
-        </div>
-        <div style="display:none"><input type="text" id="hf-date" readonly></div>
-        <div class="field"><label>Ref. By Dr.</label>
-          <input type="text" id="hf-ref" list="href-options" placeholder="Select or type..." value="Sharda Netralay" oninput="haemoSync()">
-          <datalist id="href-options"><option value="None"><option value="Self"><option value="Sharda Netralay"></datalist>
-        </div>
-
-        <h2>Haemogram Values</h2>
-        <div class="field"><label>Haemoglobin (Gms %)</label><input type="text" id="hf-hb" placeholder="e.g. 14.3" oninput="haemoSync()"></div>
-        <div class="field"><label>W.B.C. Count Total (Per c.m.m)</label><input type="text" id="hf-wbc" placeholder="e.g. 10,400" oninput="haemoSync()"></div>
-        <div class="field">
-          <label>ESR (mm)</label>
-          <input type="text" id="hf-esr" placeholder="e.g. 10" oninput="haemoSync()">
-          <div id="hf-esr-hint" style="font-size:.72rem;color:#718096;margin-top:3px">Male: 0–8 mm · Female: 0–20 mm at end of first Hr.</div>
-        </div>
-
-        <div class="result-group">
-          <h3>W.B.C. Count Differential</h3>
-          <div class="field-row">
-            <div class="field"><label>Neutrophils %</label><input type="number" id="hf-neut" placeholder="e.g. 77" min="0" max="100" oninput="haemoSync();checkDiff()"></div>
-            <div class="field"><label>Lymphocytes %</label><input type="number" id="hf-lymp" placeholder="e.g. 17" min="0" max="100" oninput="haemoSync();checkDiff()"></div>
-          </div>
-          <div class="field-row">
-            <div class="field"><label>Eosinophils %</label><input type="number" id="hf-eosi" placeholder="e.g. 03" min="0" max="100" oninput="haemoSync();checkDiff()"></div>
-            <div class="field"><label>Monocytes %</label><input type="number" id="hf-mono" placeholder="e.g. 03" min="0" max="100" oninput="haemoSync();checkDiff()"></div>
-          </div>
-          <div class="field"><label>Basophils %</label><input type="number" id="hf-baso" value="00" placeholder="e.g. 00" min="0" max="100" oninput="haemoSync();checkDiff()"></div>
-          <div class="diff-counter" id="diff-counter" style="display:none"></div>
-        </div>
-
-        <div class="field"><label>Platelets</label><div class="field-row"><input type="text" id="hf-plat" placeholder="e.g. 2.25" oninput="haemoSync()" style="flex:1"><select id="hf-plat-unit" onchange="haemoSync()" style="width:110px"><option value="lakhs" selected>Lakhs</option><option value="thousands">Thousands</option></select></div></div>
-        <div class="field"><label>Blood Sugar Random (mg/dl)</label><input type="text" id="hf-sugar" placeholder="e.g. 102.0" required aria-required="true" oninput="haemoSync()"></div>
-
-        <div class="result-group">
-          <h3>Urine Exam</h3>
-          <div class="field"><label>Albumin</label>
-            <select id="hf-alb" onchange="haemoSync()"><option value="">-- Not tested --</option><option value="Absent" selected>Absent</option><option value="Present (Trace)">Present (Trace)</option><option value="(+)">(+)</option><option value="(++)">(++)</option><option value="(+++)">(+++)</option><option value="(++++)">(++++)</option></select>
-          </div>
-          <div class="field"><label>Sugar</label>
-            <select id="hf-usg" onchange="haemoSync()"><option value="">-- Not tested --</option><option value="Absent" selected>Absent</option><option value="Present (Trace)">Present (Trace)</option><option value="(+)">(+)</option><option value="(++)">(++)</option><option value="(+++)">(+++)</option><option value="(++++)">(++++)</option></select>
-          </div>
-          <div class="field"><label>Microscopy</label>
-              <textarea id="hf-mic" rows="3" placeholder="Nil" oninput="haemoSync()" style="width:100%;resize:none;font-family:inherit;font-size:inherit;padding:6px 8px;border:1px solid #cbd5e0;border-radius:6px;line-height:1.5">Nil</textarea>
-          </div>
-        </div>
-
-        <div class="result-group">
-          <h3>Bleeding Time (B.T.) &amp; Clotting Time (CT)</h3>
-          <div class="field">
-            <label>Bleeding Time (B.T.)</label>
-            <div style="display:flex;gap:6px;align-items:center">
-              <select id="hf-bt-min" onchange="buildTime('bt');haemoSync()" style="flex:1"></select>
-              <select id="hf-bt-sec" onchange="buildTime('bt');haemoSync()" style="flex:1"></select>
-            </div>
-            <input type="text" id="hf-bt" placeholder="e.g. 1 min 30 sec" oninput="haemoSync()" style="margin-top:5px">
-          </div>
-          <div class="field">
-            <label>Clotting Time (CT)</label>
-            <div style="display:flex;gap:6px;align-items:center">
-              <select id="hf-ct-min" onchange="buildTime('ct');haemoSync()" style="flex:1"></select>
-              <select id="hf-ct-sec" onchange="buildTime('ct');haemoSync()" style="flex:1"></select>
-            </div>
-            <input type="text" id="hf-ct" placeholder="e.g. 4 min 20 sec" oninput="haemoSync()" style="margin-top:5px">
-          </div>
-        </div>
-        <div class="field"><label>HCV Test</label>
-          <select id="hf-hcv" onchange="haemoSync()"><option value="" selected>-- Not tested --</option><option value="NEGATIVE">NEGATIVE</option><option value="POSITIVE">POSITIVE</option></select>
-        </div>
-        <div class="field"><label>Australia Antigen Test</label>
-          <select id="hf-aat" onchange="haemoSync()"><option value="">-- Not tested --</option><option value="NEGATIVE" selected>NEGATIVE</option><option value="POSITIVE">POSITIVE</option></select>
-        </div>
-        <div class="field"><label>H.I.V Antibody (HIV-I &amp; II)</label>
-          <select id="hf-hiv" onchange="haemoSync()"><option value="">-- Not tested --</option><option value="NON-REACTIVE" selected>NON-REACTIVE</option><option value="REACTIVE">REACTIVE</option></select>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn-print" onclick="haemoPrint()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print
-          </button>
-          <button class="btn-share" id="haemo-share-btn" onclick="haemoShare()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share
-          </button>
-        </div>
-      </aside>
-
-      <main class="preview-panel">
-        <h2>Live Preview</h2>
-        <div class="report-scaler"><div class="report" id="haemo-report">
-          <!-- LAB HEADER (same) -->
-          <div class="lab-header">
-            <div class="lab-header-top">
-              <div class="microscope-circle">
-                <svg viewBox="0 0 100 100" fill="none"><rect x="44" y="8" width="12" height="22" rx="4" fill="#2d3a6e"/><rect x="40" y="28" width="20" height="8" rx="3" fill="#2d3a6e"/><rect x="44" y="34" width="12" height="28" rx="3" fill="#3a4a80"/><rect x="46" y="60" width="8" height="14" rx="3" fill="#2d3a6e"/><rect x="28" y="72" width="44" height="6" rx="3" fill="#3a5a8c"/><ellipse cx="50" cy="88" rx="26" ry="6" fill="#2d3a6e"/><rect x="38" y="36" width="8" height="40" rx="3" fill="#4a6aa0"/><ellipse cx="34" cy="55" rx="7" ry="5" fill="#5a7ab0"/><ellipse cx="34" cy="67" rx="5" ry="4" fill="#7a9ac0"/></svg>
+      <!-- Haemogram Form -->
+      <div id="haemo-form" class="sub-tab-page active">
+        <div class="workspace">
+          <aside class="form-panel">
+            <h2>Patient Details</h2>
+            <div class="field">
+              <label>Patient Name</label>
+              <div class="name-wrap">
+                <input type="text" id="hf-name" placeholder="Enter name" autocomplete="off" oninput="
+                    haemoSync();
+                    showSug('hf-name', 'haemo-sug', 'haemo');
+                  " onblur="hideSug('haemo-sug')" />
+                <div class="name-suggestions" id="haemo-sug"></div>
               </div>
-              <div class="lab-title-block"><div class="lab-name"></div><div class="lab-sub">Computerised</div></div>
             </div>
-            <div class="lab-header-bottom">
-              <div class="lab-address">117/B, Income Tax Colony, Infront of Sharda Netralay,<br>Nakane Road, Deopur, Dhule- 424002<br><span class="phone"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>: 9422707425</span></div>
-              <div class="lab-doctor">Mrs. Manjusha P. Pitrubhakta<br>B.Sc.,D.M.L.T. (Pune)<br><span class="reg">Reg. No.: PGD/MLT/0005/2021</span></div>
+            <div style="display: none"><input type="text" id="hf-date" readonly /></div>
+            <div class="field">
+              <label>Ref. By Dr.</label>
+              <input type="text" id="hf-ref" list="href-options" placeholder="Select or type..." value="Sharda Netralay" oninput="haemoSync()" />
+              <datalist id="href-options">
+                <option value="None"></option>
+                <option value="Self"></option>
+                <option value="Sharda Netralay"></option>
+              </datalist>
             </div>
-          </div>
-          <!-- HAEMOGRAM BODY -->
-          <div class="report-body">
-            <table class="meta-table"><colgroup><col class="c-label"><col class="c-colon"><col class="c-value"><col class="c-gap"><col class="c-rlabel"><col class="c-rcolon"><col class="c-rvalue"></colgroup>
-              <tr><td class="meta-label" style="white-space:nowrap">Patient's Name</td><td class="meta-colon">:</td><td class="meta-value" id="hr-name">—</td><td></td><td class="meta-label">Date</td><td class="meta-colon">:</td><td class="meta-value" id="hr-date">—</td></tr>
-              <tr><td class="meta-label">Reference By</td><td class="meta-colon">:</td><td class="meta-value" id="hr-ref">—</td><td colspan="4"></td></tr>
-            </table>
-            <hr class="report-hr">
-            <div class="report-title">Haemogram</div>
 
-            <div class="haemo-col-headers">
-              <span>Test Name</span>
-              <span>Result</span>
-              <span>Normal Range</span>
+            <h2>Haemogram Values</h2>
+            <div class="field">
+              <label>Haemoglobin (Gms %)</label><input type="text" id="hf-hb" placeholder="e.g. 14.3" oninput="haemoSync()" />
             </div>
-            <div id="haemo-table-body"></div>
+            <div class="field">
+              <label>W.B.C. Count Total (Per c.m.m)</label><input type="text" id="hf-wbc" placeholder="e.g. 10,400" oninput="haemoSync()" />
+            </div>
+            <div class="field">
+              <label>ESR (mm)</label>
+              <input type="text" id="hf-esr" placeholder="e.g. 10" oninput="haemoSync()" />
+              <div id="hf-esr-hint" style="font-size: 0.72rem; color: #718096; margin-top: 3px">
+                Male: 0–8 mm · Female: 0–20 mm at end of first Hr.
+              </div>
+            </div>
 
-            <div class="haemo-footer-row">
-              <div class="haemo-thanks"><em>Thanks for Reference</em></div>
-              <div class="haemo-sig" style="padding-right:2cm">Signature</div>
+            <div class="result-group">
+              <h3>W.B.C. Count Differential</h3>
+              <div class="field-row">
+                <div class="field">
+                  <label>Neutrophils %</label><input type="number" id="hf-neut" placeholder="e.g. 77" min="0" max="100" oninput="
+                      haemoSync();
+                      checkDiff();
+                    " />
+                </div>
+                <div class="field">
+                  <label>Lymphocytes %</label><input type="number" id="hf-lymp" placeholder="e.g. 17" min="0" max="100" oninput="
+                      haemoSync();
+                      checkDiff();
+                    " />
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Eosinophils %</label><input type="number" id="hf-eosi" placeholder="e.g. 03" min="0" max="100" oninput="
+                      haemoSync();
+                      checkDiff();
+                    " />
+                </div>
+                <div class="field">
+                  <label>Monocytes %</label><input type="number" id="hf-mono" placeholder="e.g. 03" min="0" max="100" oninput="
+                      haemoSync();
+                      checkDiff();
+                    " />
+                </div>
+              </div>
+              <div class="field">
+                <label>Basophils %</label><input type="number" id="hf-baso" value="00" placeholder="e.g. 00" min="0" max="100" oninput="
+                    haemoSync();
+                    checkDiff();
+                  " />
+              </div>
+              <div class="diff-counter" id="diff-counter" style="display: none"></div>
             </div>
-          </div>
-          <div class="lab-footer"><div class="footer-ornament">&#x1F4D6;&#x2764;&#x1F4D6;</div><div class="footer-bar"><div class="footer-text">These are only reading based on technical analysis and no opinion is indicated therefore said reading's<br>should please be got certified by pathologist before using the same for diagnosis and treatment</div></div></div>
-        </div></div>
-      </main>
+
+            <div class="field">
+              <label>Platelets</label>
+              <div class="field-row">
+                <input type="text" id="hf-plat" placeholder="e.g. 2.25" oninput="haemoSync()" style="flex: 1" /><select id="hf-plat-unit" onchange="haemoSync()" style="width: 110px">
+                  <option value="lakhs" selected>Lakhs</option>
+                  <option value="thousands">Thousands</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Blood Sugar Random (mg/dl)</label><input type="text" id="hf-sugar" placeholder="e.g. 102.0" required aria-required="true" oninput="haemoSync()" />
+            </div>
+
+            <div class="result-group">
+              <h3>Urine Exam</h3>
+              <div class="field">
+                <label>Albumin</label>
+                <select id="hf-alb" onchange="haemoSync()">
+                  <option value="">-- Not tested --</option>
+                  <option value="Absent" selected>Absent</option>
+                  <option value="Present (Trace)">Present (Trace)</option>
+                  <option value="(+)">(+)</option>
+                  <option value="(++)">(++)</option>
+                  <option value="(+++)">(+++)</option>
+                  <option value="(++++)">(++++)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Sugar</label>
+                <select id="hf-usg" onchange="haemoSync()">
+                  <option value="">-- Not tested --</option>
+                  <option value="Absent" selected>Absent</option>
+                  <option value="Present (Trace)">Present (Trace)</option>
+                  <option value="(+)">(+)</option>
+                  <option value="(++)">(++)</option>
+                  <option value="(+++)">(+++)</option>
+                  <option value="(++++)">(++++)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Microscopy</label>
+                <textarea id="hf-mic" rows="3" placeholder="Nil" oninput="haemoSync()" style="
+                    width: 100%;
+                    resize: none;
+                    font-family: inherit;
+                    font-size: inherit;
+                    padding: 6px 8px;
+                    border: 1px solid #cbd5e0;
+                    border-radius: 6px;
+                    line-height: 1.5;
+                  ">
+Nil</textarea>
+              </div>
+            </div>
+
+            <div class="result-group">
+              <h3>Bleeding Time (B.T.) &amp; Clotting Time (CT)</h3>
+              <div class="field">
+                <label>Bleeding Time (B.T.)</label>
+                <div style="display: flex; gap: 6px; align-items: center">
+                  <select id="hf-bt-min" onchange="
+                      buildTime('bt');
+                      haemoSync();
+                    " style="flex: 1"></select>
+                  <select id="hf-bt-sec" onchange="
+                      buildTime('bt');
+                      haemoSync();
+                    " style="flex: 1"></select>
+                </div>
+                <input type="text" id="hf-bt" placeholder="e.g. 1 min 30 sec" oninput="haemoSync()" style="margin-top: 5px" />
+              </div>
+              <div class="field">
+                <label>Clotting Time (CT)</label>
+                <div style="display: flex; gap: 6px; align-items: center">
+                  <select id="hf-ct-min" onchange="
+                      buildTime('ct');
+                      haemoSync();
+                    " style="flex: 1"></select>
+                  <select id="hf-ct-sec" onchange="
+                      buildTime('ct');
+                      haemoSync();
+                    " style="flex: 1"></select>
+                </div>
+                <input type="text" id="hf-ct" placeholder="e.g. 4 min 20 sec" oninput="haemoSync()" style="margin-top: 5px" />
+              </div>
+            </div>
+            <div class="field">
+              <label>HCV Test</label>
+              <select id="hf-hcv" onchange="haemoSync()">
+                <option value="" selected>-- Not tested --</option>
+                <option value="NEGATIVE">NEGATIVE</option>
+                <option value="POSITIVE">POSITIVE</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Australia Antigen Test</label>
+              <select id="hf-aat" onchange="haemoSync()">
+                <option value="">-- Not tested --</option>
+                <option value="NEGATIVE" selected>NEGATIVE</option>
+                <option value="POSITIVE">POSITIVE</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>H.I.V Antibody (HIV-I &amp; II)</label>
+              <select id="hf-hiv" onchange="haemoSync()">
+                <option value="">-- Not tested --</option>
+                <option value="NON-REACTIVE" selected>NON-REACTIVE</option>
+                <option value="REACTIVE">REACTIVE</option>
+              </select>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn-print" onclick="haemoPrint()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <rect x="6" y="14" width="12" height="8" />
+                </svg>Print
+              </button>
+              <button class="btn-share" id="haemo-share-btn" onclick="haemoShare()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>Share
+              </button>
+            </div>
+          </aside>
+
+          <main class="preview-panel">
+            <h2>Live Preview</h2>
+            <div class="report-scaler">
+              <div class="report" id="haemo-report">
+                <!-- LAB HEADER (same) -->
+
+                <!-- HAEMOGRAM BODY -->
+                <div class="report-body">
+                  <table class="meta-table">
+                    <colgroup>
+                      <col class="c-label" />
+                      <col class="c-colon" />
+                      <col class="c-value" />
+                      <col class="c-gap" />
+                      <col class="c-rlabel" />
+                      <col class="c-rcolon" />
+                      <col class="c-rvalue" />
+                    </colgroup>
+                    <tr>
+                      <td class="meta-label" style="white-space: nowrap">Patient's Name</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="hr-name">—</td>
+                      <td></td>
+                      <td class="meta-label">Date</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="hr-date">—</td>
+                    </tr>
+                    <tr>
+                      <td class="meta-label">Reference By</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="hr-ref">—</td>
+                      <td colspan="4"></td>
+                    </tr>
+                  </table>
+                  <hr class="report-hr" />
+                  <div class="report-title">Haemogram</div>
+
+                  <div class="haemo-col-headers">
+                    <span>Test Name</span>
+                    <span>Result</span>
+                    <span>Normal Range</span>
+                  </div>
+                  <div id="haemo-table-body"></div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- Haemogram History -->
+      <div id="haemo-hist" class="sub-tab-page">
+        <div class="history-page" id="haemo-hist-content"></div>
+      </div>
     </div>
-  </div>
 
-  <!-- Haemogram History -->
-  <div id="haemo-hist" class="sub-tab-page">
-    <div class="history-page" id="haemo-hist-content"></div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      ALL HISTORY MAIN TAB
 ════════════════════════════════════════ -->
-<div id="main-allhistory" class="main-tab-page">
-  <div class="history-page" id="all-hist-content"></div>
-</div>
+    <div id="main-allhistory" class="main-tab-page">
+      <div class="history-page" id="all-hist-content"></div>
+    </div>
 
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      TEMPLATES MAIN TAB (hidden)
 ════════════════════════════════════════ -->
-<div id="main-templates" class="main-tab-page">
-  <div class="templates-page">
-    <div class="tpl-header">
-      <div><h2>✏️ Report Note Templates</h2><p>Edit notes shown on the Serology report based on test result. Saved locally.</p></div>
-      <button class="btn-tpl-save" onclick="saveTemplates()">💾 Save All Templates</button>
+    <div id="main-templates" class="main-tab-page">
+      <div class="templates-page">
+        <div class="tpl-header">
+          <div>
+            <h2>Report Note Templates</h2>
+            <p>Edit notes shown on the Serology report based on test result. Saved locally.</p>
+          </div>
+          <button class="btn-tpl-save" onclick="saveTemplates()">Save All Templates</button>
+        </div>
+        <div class="tpl-grid">
+          <div class="tpl-card">
+            <div class="tpl-card-header">
+              <span class="tpl-test">HBsAg Antibody</span><span class="badge badge-neg">NEGATIVE</span>
+            </div>
+            <div class="tpl-field">
+              <label>Method Line</label><input type="text" id="tpl-hbsag-neg-method" />
+            </div>
+            <div class="tpl-field">
+              <label>Note Text</label><textarea id="tpl-hbsag-neg-note" rows="4"></textarea>
+            </div>
+          </div>
+          <div class="tpl-card">
+            <div class="tpl-card-header">
+              <span class="tpl-test">HBsAg Antibody</span><span class="badge badge-pos">POSITIVE</span>
+            </div>
+            <div class="tpl-field">
+              <label>Method Line</label><input type="text" id="tpl-hbsag-pos-method" />
+            </div>
+            <div class="tpl-field">
+              <label>Note Text</label><textarea id="tpl-hbsag-pos-note" rows="4"></textarea>
+            </div>
+          </div>
+          <div class="tpl-card">
+            <div class="tpl-card-header">
+              <span class="tpl-test">HIV Antibody</span><span class="badge badge-nrx">NON-REACTIVE</span>
+            </div>
+            <div class="tpl-field">
+              <label>Method Line</label><input type="text" id="tpl-hiv-nrx-method" />
+            </div>
+            <div class="tpl-field">
+              <label>Note Text</label><textarea id="tpl-hiv-nrx-note" rows="4"></textarea>
+            </div>
+          </div>
+          <div class="tpl-card">
+            <div class="tpl-card-header">
+              <span class="tpl-test">HIV Antibody</span><span class="badge badge-rx">REACTIVE</span>
+            </div>
+            <div class="tpl-field">
+              <label>Method Line</label><input type="text" id="tpl-hiv-rx-method" />
+            </div>
+            <div class="tpl-field">
+              <label>Note Text</label><textarea id="tpl-hiv-rx-note" rows="4"></textarea>
+            </div>
+          </div>
+        </div>
+        <div id="tpl-saved-msg" class="tpl-saved-msg" style="display: none">
+          Templates saved!
+        </div>
+      </div>
     </div>
-    <div class="tpl-grid">
-      <div class="tpl-card"><div class="tpl-card-header"><span class="tpl-test">HBsAg Antibody</span><span class="badge badge-neg">NEGATIVE</span></div>
-        <div class="tpl-field"><label>Method Line</label><input type="text" id="tpl-hbsag-neg-method"></div>
-        <div class="tpl-field"><label>Note Text</label><textarea id="tpl-hbsag-neg-note" rows="4"></textarea></div>
-      </div>
-      <div class="tpl-card"><div class="tpl-card-header"><span class="tpl-test">HBsAg Antibody</span><span class="badge badge-pos">POSITIVE</span></div>
-        <div class="tpl-field"><label>Method Line</label><input type="text" id="tpl-hbsag-pos-method"></div>
-        <div class="tpl-field"><label>Note Text</label><textarea id="tpl-hbsag-pos-note" rows="4"></textarea></div>
-      </div>
-      <div class="tpl-card"><div class="tpl-card-header"><span class="tpl-test">HIV Antibody</span><span class="badge badge-nrx">NON-REACTIVE</span></div>
-        <div class="tpl-field"><label>Method Line</label><input type="text" id="tpl-hiv-nrx-method"></div>
-        <div class="tpl-field"><label>Note Text</label><textarea id="tpl-hiv-nrx-note" rows="4"></textarea></div>
-      </div>
-      <div class="tpl-card"><div class="tpl-card-header"><span class="tpl-test">HIV Antibody</span><span class="badge badge-rx">REACTIVE</span></div>
-        <div class="tpl-field"><label>Method Line</label><input type="text" id="tpl-hiv-rx-method"></div>
-        <div class="tpl-field"><label>Note Text</label><textarea id="tpl-hiv-rx-note" rows="4"></textarea></div>
-      </div>
-    </div>
-    <div id="tpl-saved-msg" class="tpl-saved-msg" style="display:none">✅ Templates saved!</div>
-  </div>
-</div>
 
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      BLOOD SUGAR MAIN TAB
 ════════════════════════════════════════ -->
-<div id="main-bloodsugar" class="main-tab-page">
-  <div class="sub-tab-bar">
-    <button class="sub-tab-btn active" onclick="switchSub('bs','form',this)">📋 Form</button>
-    <button class="sub-tab-btn" onclick="switchSub('bs','hist',this)">🕒 History</button>
-  </div>
+    <div id="main-bloodsugar" class="main-tab-page">
+      <div class="sub-tab-bar">
+        <button class="sub-tab-btn active" onclick="switchSub('bs', 'form', this)">Form</button>
+        <button class="sub-tab-btn" onclick="switchSub('bs', 'hist', this)">History</button>
+      </div>
 
-  <div id="bs-form" class="sub-tab-page active">
-    <div class="workspace">
-      <aside class="form-panel">
-        <h2>Patient Details</h2>
-        <div class="field"><label>Patient Name</label>
-          <div class="name-wrap">
-            <input type="text" id="bsf-name" placeholder="Enter name" autocomplete="off" oninput="bsSync();showSug('bsf-name','bs-sug','bs')" onblur="hideSug('bs-sug')">
-            <div class="name-suggestions" id="bs-sug"></div>
-          </div>
-        </div>
-        <div style="display:none"><input type="text" id="bsf-date" readonly></div>
-        <div class="field"><label>Ref. By Dr.</label>
-          <input type="text" id="bsf-ref" list="bsref-opts" placeholder="Select or type..." value="Sharda Netralay" oninput="bsSync()">
-          <datalist id="bsref-opts"><option value="None"><option value="Self"><option value="Sharda Netralay"></datalist>
-        </div>
-
-        <h2>BSL (Random) <span style="font-weight:400;color:#718096;font-size:.75rem">Normal 70–140 mg/dl</span></h2>
-        <div class="result-group">
-          <div class="field-row">
-            <div class="field"><label>BSL Value (mg/dl)</label><input type="number" id="bsf-r-val" placeholder="e.g. 102" step="0.1" oninput="bsSync()"></div>
-          </div>
-          <div class="field-row">
-            <div class="field"><label>Urine Sugar</label>
-              <select id="bsf-r-usg" onchange="bsSync()">
-                <option value="">--</option><option value="Absent">Absent</option><option value="Present">Present</option>
-                <option value="(+)">(+)</option><option value="(++)">(++)</option><option value="(+++)">(+++)</option><option value="Trace">Trace</option>
-              </select>
+      <div id="bs-form" class="sub-tab-page active">
+        <div class="workspace">
+          <aside class="form-panel">
+            <h2>Patient Details</h2>
+            <div class="field">
+              <label>Patient Name</label>
+              <div class="name-wrap">
+                <input type="text" id="bsf-name" placeholder="Enter name" autocomplete="off" oninput="
+                    bsSync();
+                    showSug('bsf-name', 'bs-sug', 'bs');
+                  " onblur="hideSug('bs-sug')" />
+                <div class="name-suggestions" id="bs-sug"></div>
+              </div>
             </div>
-            <div class="field"><label>Ketone</label>
-              <select id="bsf-r-ket" onchange="bsKetoneChanged('bsf-r-ket')">
-                <option value="">--</option><option value="Absent">Absent</option><option value="Present">Present</option>
-                <option value="(+)">(+)</option><option value="(++)">(++)</option><option value="Trace">Trace</option>
-              </select>
+            <div style="display: none"><input type="text" id="bsf-date" readonly /></div>
+            <div class="field">
+              <label>Ref. By Dr.</label>
+              <input type="text" id="bsf-ref" list="bsref-opts" placeholder="Select or type..." value="Sharda Netralay" oninput="bsSync()" />
+              <datalist id="bsref-opts">
+                <option value="None"></option>
+                <option value="Self"></option>
+                <option value="Sharda Netralay"></option>
+              </datalist>
             </div>
-          </div>
+
+            <h2>
+              BSL (Random)
+              <span style="font-weight: 400; color: #718096; font-size: 0.75rem">Normal 70–140 mg/dl</span>
+            </h2>
+            <div class="result-group">
+              <div class="field-row">
+                <div class="field">
+                  <label>BSL Value (mg/dl)</label><input type="number" id="bsf-r-val" placeholder="e.g. 102" step="0.1" oninput="bsSync()" />
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Urine Sugar</label>
+                  <select id="bsf-r-usg" onchange="bsSync()">
+                    <option value="">--</option>
+                    <option value="Absent">Absent</option>
+                    <option value="Present">Present</option>
+                    <option value="(+)">(+)</option>
+                    <option value="(++)">(++)</option>
+                    <option value="(+++)">(+++)</option>
+                    <option value="Trace">Trace</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Ketone</label>
+                  <select id="bsf-r-ket" onchange="bsKetoneChanged('bsf-r-ket')">
+                    <option value="">--</option>
+                    <option value="Absent">Absent</option>
+                    <option value="Present">Present</option>
+                    <option value="(+)">(+)</option>
+                    <option value="(++)">(++)</option>
+                    <option value="Trace">Trace</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <h2>
+              BSL (Fasting)
+              <span style="font-weight: 400; color: #718096; font-size: 0.75rem">Normal 70–110 mg/dl</span>
+            </h2>
+            <div class="result-group">
+              <div class="field">
+                <label>BSL Value (mg/dl)</label><input type="number" id="bsf-f-val" placeholder="e.g. 156" step="0.1" oninput="bsSync()" />
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Urine Sugar</label>
+                  <select id="bsf-f-usg" onchange="bsSync()">
+                    <option value="">--</option>
+                    <option value="Absent">Absent</option>
+                    <option value="Present">Present</option>
+                    <option value="(+)">(+)</option>
+                    <option value="(++)">(++)</option>
+                    <option value="(+++)">(+++)</option>
+                    <option value="Trace">Trace</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Ketone</label>
+                  <select id="bsf-f-ket" onchange="bsKetoneChanged('bsf-f-ket')">
+                    <option value="">--</option>
+                    <option value="Absent">Absent</option>
+                    <option value="Present">Present</option>
+                    <option value="(+)">(+)</option>
+                    <option value="(++)">(++)</option>
+                    <option value="Trace">Trace</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <h2>
+              BSL (Post-Prandial)
+              <span style="font-weight: 400; color: #718096; font-size: 0.75rem">Normal 70–140 mg/dl</span>
+            </h2>
+            <div class="result-group">
+              <div class="field">
+                <label>BSL Value (mg/dl)</label><input type="number" id="bsf-p-val" placeholder="e.g. 205" step="0.1" oninput="bsSync()" />
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Urine Sugar</label>
+                  <select id="bsf-p-usg" onchange="bsSync()">
+                    <option value="">--</option>
+                    <option value="Absent">Absent</option>
+                    <option value="Present">Present</option>
+                    <option value="(+)">(+)</option>
+                    <option value="(++)">(++)</option>
+                    <option value="(+++)">(+++)</option>
+                    <option value="Trace">Trace</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Ketone</label>
+                  <select id="bsf-p-ket" onchange="bsKetoneChanged('bsf-p-ket')">
+                    <option value="">--</option>
+                    <option value="Absent">Absent</option>
+                    <option value="Present">Present</option>
+                    <option value="(+)">(+)</option>
+                    <option value="(++)">(++)</option>
+                    <option value="Trace">Trace</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn-print" onclick="bsPrint()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <rect x="6" y="14" width="12" height="8" />
+                </svg>Print
+              </button>
+              <button class="btn-share" id="bs-share-btn" onclick="bsShare()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>Share
+              </button>
+            </div>
+          </aside>
+
+          <main class="preview-panel">
+            <h2>Live Preview</h2>
+            <div class="report-scaler">
+              <div class="report bs-report" id="bs-report">
+                <!-- BLOOD SUGAR BODY — Option B data layout -->
+                <div class="bs-body">
+                  <table class="bs-meta-table">
+                    <colgroup>
+                      <col class="bs-meta-label-space" />
+                      <col class="bs-meta-colon-space" />
+                      <col />
+                      <col class="bs-meta-date-column" />
+                    </colgroup>
+                    <tr>
+                      <td class="bs-meta-spacer"></td>
+                      <td class="bs-meta-spacer"></td>
+                      <td class="bs-meta-value" colspan="2" id="bsr-name">—</td>
+                    </tr>
+                    <tr>
+                      <td class="bs-meta-spacer"></td>
+                      <td class="bs-meta-spacer"></td>
+                      <td class="bs-meta-value" id="bsr-ref">—</td>
+                      <td class="bs-meta-right">
+                        <span>Date</span>
+                        <span id="bsr-date">—</span>
+                      </td>
+                    </tr>
+                  </table>
+                  <hr class="report-hr" />
+
+                  <div class="bs-report-title">Blood Sugar Report</div>
+                  <div class="bs-test-header">
+                    <span>Test</span>
+                    <span>Result</span>
+                    <span>Unit</span>
+                  </div>
+
+                  <div id="bs-sections"></div>
+                </div>
+              </div>
+              <!-- /bs-report -->
+            </div>
+          </main>
         </div>
+      </div>
 
-        <h2>BSL (Fasting) <span style="font-weight:400;color:#718096;font-size:.75rem">Normal 70–110 mg/dl</span></h2>
-        <div class="result-group">
-          <div class="field"><label>BSL Value (mg/dl)</label><input type="number" id="bsf-f-val" placeholder="e.g. 156" step="0.1" oninput="bsSync()"></div>
-          <div class="field-row">
-            <div class="field"><label>Urine Sugar</label>
-              <select id="bsf-f-usg" onchange="bsSync()">
-                <option value="">--</option><option value="Absent">Absent</option><option value="Present">Present</option>
-                <option value="(+)">(+)</option><option value="(++)">(++)</option><option value="(+++)">(+++)</option><option value="Trace">Trace</option>
-              </select>
-            </div>
-            <div class="field"><label>Ketone</label>
-              <select id="bsf-f-ket" onchange="bsKetoneChanged('bsf-f-ket')">
-                <option value="">--</option><option value="Absent">Absent</option><option value="Present">Present</option>
-                <option value="(+)">(+)</option><option value="(++)">(++)</option><option value="Trace">Trace</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <h2>BSL (Post-Prandial) <span style="font-weight:400;color:#718096;font-size:.75rem">Normal 70–140 mg/dl</span></h2>
-        <div class="result-group">
-          <div class="field"><label>BSL Value (mg/dl)</label><input type="number" id="bsf-p-val" placeholder="e.g. 205" step="0.1" oninput="bsSync()"></div>
-          <div class="field-row">
-            <div class="field"><label>Urine Sugar</label>
-              <select id="bsf-p-usg" onchange="bsSync()">
-                <option value="">--</option><option value="Absent">Absent</option><option value="Present">Present</option>
-                <option value="(+)">(+)</option><option value="(++)">(++)</option><option value="(+++)">(+++)</option><option value="Trace">Trace</option>
-              </select>
-            </div>
-            <div class="field"><label>Ketone</label>
-              <select id="bsf-p-ket" onchange="bsKetoneChanged('bsf-p-ket')">
-                <option value="">--</option><option value="Absent">Absent</option><option value="Present">Present</option>
-                <option value="(+)">(+)</option><option value="(++)">(++)</option><option value="Trace">Trace</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn-print" onclick="bsPrint()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print
-          </button>
-          <button class="btn-share" id="bs-share-btn" onclick="bsShare()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share
-          </button>
-        </div>
-      </aside>
-
-      <main class="preview-panel">
-        <h2>Live Preview — A5</h2>
-        <div class="report-scaler">
-        <div class="report bs-report" id="bs-report">
-
-          <!-- BLOOD SUGAR BODY — Option B data layout -->
-          <div class="bs-body">
-            <table class="bs-meta-table">
-              <tr>
-                <td class="bs-meta-label">Name</td><td class="bs-meta-colon">:</td>
-                <td class="bs-meta-value" id="bsr-name" colspan="2" style="white-space:normal;word-break:break-word">—</td>
-              </tr>
-              <tr>
-                <td class="bs-meta-label">Ref. By</td><td class="bs-meta-colon">:</td>
-                <td class="bs-meta-value" id="bsr-ref">—</td>
-                <td class="bs-meta-right"><span class="bs-meta-label">Date</span><span class="bs-meta-colon">:</span><span class="bs-meta-value" id="bsr-date">—</span></td>
-              </tr>
-            </table>
-            <div class="bs-report-title">Blood Sugar Report</div>
-            <div class="bs-test-header">Test</div>
-
-            <div id="bs-sections"></div>
-
-            <div class="bs-footer-row">
-              <div class="bs-thanks"><em>Thanks !</em></div>
-              <div class="bs-sig">Signature</div>
-            </div>
-          </div>
-
-        </div><!-- /bs-report -->
-        </div>
-      </main>
+      <!-- Blood Sugar History -->
+      <div id="bs-hist" class="sub-tab-page">
+        <div class="history-page" id="bs-hist-content"></div>
+      </div>
     </div>
-  </div>
 
-  <!-- Blood Sugar History -->
-  <div id="bs-hist" class="sub-tab-page">
-    <div class="history-page" id="bs-hist-content"></div>
-  </div>
-</div>
-
-
-
-
-
-
-<div id="main-bill" class="main-tab-page">
-  <div class="sub-tab-bar">
-    <button class="sub-tab-btn active" onclick="switchSub('bill','form',this)">📋 New Bill</button>
-    <button class="sub-tab-btn" onclick="switchSub('bill','hist',this)">🕒 History</button>
-  </div>
-
-  <div id="bill-form" class="sub-tab-page active">
-    <div class="workspace">
-      <aside class="form-panel">
-        <h2>Bill Details</h2>
-        <div class="field">
-          <label>Patient Name</label>
-          <div class="name-wrap">
-            <input type="text" id="bf-name" placeholder="Enter name" autocomplete="off"
-                   oninput="billSync();showSug('bf-name','bill-sug','bill')" onblur="hideSug('bill-sug')">
-            <div class="name-suggestions" id="bill-sug"></div>
-          </div>
-        </div>
-        <div class="field">
-          <label>Ref. By Dr.</label>
-          <input type="text" id="bf-ref" list="bref-opts" placeholder="Select or type..." oninput="billSync()">
-          <datalist id="bref-opts"><option value="None"><option value="Self"><option value="Sharda Netralay"></datalist>
-        </div>
-        <div class="field">
-          <label>Age</label>
-          <input type="text" id="bf-age" placeholder="e.g. 49 Yrs" oninput="billSync()">
-        </div>
-        <div class="field">
-          <label>Contact No.</label>
-          <input type="text" id="bf-contact" placeholder="e.g. 9422707425" oninput="billSync()">
-        </div>
-        <div class="field">
-          <label>Reporting Location</label>
-          <input type="text" id="bf-location" placeholder="e.g. Accura Diagnostics" oninput="billSync()">
-        </div>
-        <div style="display:none">
-          <input type="text" id="bf-billno" readonly>
-          <input type="text" id="bf-date" readonly>
-        </div>
-
-        <h2 style="margin-top:14px">Test Items</h2>
-        <div id="bill-items-form"></div>
-        <button onclick="addBillRow()" style="width:100%;padding:8px;border:1.5px dashed #1a3a5c;border-radius:6px;background:transparent;color:#1a3a5c;font-size:.85rem;font-weight:600;font-family:inherit;cursor:pointer;margin-top:4px;transition:all .15s" onmouseover="this.style.background='#eef3f8'" onmouseout="this.style.background='transparent'">
-          + Add Test Row
+    <div id="main-bill" class="main-tab-page">
+      <div class="sub-tab-bar">
+        <button class="sub-tab-btn active" onclick="switchSub('bill', 'form', this)">
+          New Bill
         </button>
+        <button class="sub-tab-btn" onclick="switchSub('bill', 'hist', this)">History</button>
+      </div>
 
-        <h2 style="margin-top:14px">Summary</h2>
-        <div class="field">
-          <label>Discount (₹)</label>
-          <input type="number" id="bf-discount" placeholder="0" min="0" oninput="billSync()">
+      <div id="bill-form" class="sub-tab-page active">
+        <div class="workspace">
+          <aside class="form-panel">
+            <h2>Bill Details</h2>
+            <div class="field">
+              <label>Patient Name</label>
+              <div class="name-wrap">
+                <input type="text" id="bf-name" placeholder="Enter name" autocomplete="off" oninput="
+                    billSync();
+                    showSug('bf-name', 'bill-sug', 'bill');
+                  " onblur="hideSug('bill-sug')" />
+                <div class="name-suggestions" id="bill-sug"></div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Ref. By Dr.</label>
+              <input type="text" id="bf-ref" list="bref-opts" placeholder="Select or type..." oninput="billSync()" />
+              <datalist id="bref-opts">
+                <option value="None"></option>
+                <option value="Self"></option>
+                <option value="Sharda Netralay"></option>
+              </datalist>
+            </div>
+            <div class="field">
+              <label>Age</label>
+              <input type="text" id="bf-age" placeholder="e.g. 49 Yrs" oninput="billSync()" />
+            </div>
+            <div class="field">
+              <label>Contact No.</label>
+              <input type="text" id="bf-contact" placeholder="e.g. 9422707425" oninput="billSync()" />
+            </div>
+            <div class="field">
+              <label>Reporting Location</label>
+              <input type="text" id="bf-location" placeholder="e.g. Accura Diagnostics" oninput="billSync()" />
+            </div>
+            <div style="display: none">
+              <input type="text" id="bf-billno" readonly />
+              <input type="text" id="bf-date" readonly />
+            </div>
+
+            <h2 style="margin-top: 14px">Test Items</h2>
+            <div id="bill-items-form"></div>
+            <button onclick="addBillRow()" style="
+                width: 100%;
+                padding: 8px;
+                border: 1.5px dashed #1a3a5c;
+                border-radius: 6px;
+                background: transparent;
+                color: #1a3a5c;
+                font-size: 0.85rem;
+                font-weight: 600;
+                font-family: inherit;
+                cursor: pointer;
+                margin-top: 4px;
+                transition: all 0.15s;
+              " onmouseover="this.style.background = '#eef3f8'" onmouseout="this.style.background = 'transparent'">
+              + Add Test Row
+            </button>
+
+            <h2 style="margin-top: 14px">Summary</h2>
+            <div class="field">
+              <label>Discount (₹)</label>
+              <input type="number" id="bf-discount" placeholder="0" min="0" oninput="billSync()" />
+            </div>
+            <div style="
+                background: #f7fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                padding: 12px;
+                margin-top: 4px;
+                font-family: 'Inter', sans-serif;
+              ">
+              <div style="
+                  display: flex;
+                  justify-content: space-between;
+                  font-size: 0.85rem;
+                  color: #555;
+                  margin-bottom: 6px;
+                ">
+                <span>Subtotal</span><span id="bf-subtotal-display">₹ 0.00</span>
+              </div>
+              <div style="
+                  display: flex;
+                  justify-content: space-between;
+                  font-size: 0.85rem;
+                  color: #555;
+                  margin-bottom: 6px;
+                ">
+                <span>Discount</span><span id="bf-discount-display">₹ 0.00</span>
+              </div>
+              <div style="
+                  display: flex;
+                  justify-content: space-between;
+                  font-size: 0.95rem;
+                  font-weight: 700;
+                  color: #1a3a5c;
+                  border-top: 1.5px solid #cbd5e0;
+                  padding-top: 8px;
+                  margin-top: 4px;
+                ">
+                <span>Amount Due</span><span id="bf-total-display">₹ 0.00</span>
+              </div>
+            </div>
+
+            <div class="btn-row" style="margin-top: 6px">
+              <button class="btn-print" onclick="billPrint()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <rect x="6" y="14" width="12" height="8" />
+                </svg>Print
+              </button>
+              <button class="btn-share" id="bill-share-btn" onclick="billShare()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>Share
+              </button>
+            </div>
+            <button onclick="resetBill()" style="
+                width: 100%;
+                margin-top: 8px;
+                padding: 8px;
+                border: 1.5px solid #cbd5e0;
+                border-radius: 7px;
+                background: #fff;
+                color: #718096;
+                font-size: 0.85rem;
+                font-weight: 600;
+                font-family: inherit;
+                cursor: pointer;
+              ">
+              New Bill
+            </button>
+          </aside>
+
+          <main class="preview-panel">
+            <h2>Live Preview</h2>
+            <div class="report-scaler">
+              <div class="bill-report" id="bill-report">
+                <!-- BILL TO -->
+                <div class="bill-body">
+                  <div class="bill-clinic-info">
+                    <div class="bill-clinic-name">Pitrubhakta Clinical Lab</div>
+                    <div class="bill-clinic-address">
+                      117/B, Income Tax Colony, Opp. Sharda Netralay, Nakane Road, Dhule - 424002
+                    </div>
+                    <div class="bill-clinic-contact">9422707425</div>
+                  </div>
+                  <div class="bill-to-box">
+                    <div class="bill-to-row" style="justify-content: space-between; align-items: baseline">
+                      <div style="display: flex; align-items: baseline; flex: 1">
+                        <span class="bill-to-lbl">Patient Name</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-name">—</span>
+                      </div>
+                      <div style="
+                          display: flex;
+                          align-items: baseline;
+                          gap: 6px;
+                          flex-shrink: 0;
+                          margin-left: 12px;
+                        ">
+                        <span style="font-size: 10pt; font-weight: 700; white-space: nowrap">Bill No.</span>
+                        <span style="font-size: 10pt; font-weight: 700; white-space: nowrap" id="br-billno">—</span>
+                      </div>
+                    </div>
+                    <div class="bill-to-row" id="br-age-row" style="justify-content: space-between; align-items: baseline">
+                      <div style="display: flex; align-items: baseline; flex: 1">
+                        <span class="bill-to-lbl">Age</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-age">—</span>
+                      </div>
+                      <div style="
+                          display: flex;
+                          align-items: baseline;
+                          gap: 6px;
+                          flex-shrink: 0;
+                          margin-left: 12px;
+                        ">
+                        <span style="font-size: 10pt; font-weight: 700; white-space: nowrap">Date</span>
+                        <span style="font-size: 10pt; font-weight: 700; white-space: nowrap" id="br-date">—</span>
+                      </div>
+                    </div>
+                    <div class="bill-to-row">
+                      <span class="bill-to-lbl">Refer Doctor</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-ref">—</span>
+                    </div>
+                    <div class="bill-to-row">
+                      <span class="bill-to-lbl">Contact No.</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-contact"></span>
+                    </div>
+                    <div class="bill-to-row" id="br-location-row">
+                      <span class="bill-to-lbl">Reporting Location</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-location"></span>
+                    </div>
+                  </div>
+
+                  <!-- ITEMS TABLE -->
+                  <table class="bill-items-table">
+                    <thead>
+                      <tr>
+                        <th>Test Name</th>
+                        <th>Price</th>
+                      </tr>
+                    </thead>
+                    <tbody id="br-items"></tbody>
+                  </table>
+
+                  <!-- TOTALS -->
+                  <div class="bill-totals">
+                    <div class="bill-total-row">
+                      <span>Subtotal</span><span id="br-subtotal">0.00</span>
+                    </div>
+                    <div class="bill-total-row bill-discount-row">
+                      <span>Discount</span><span id="br-discount">0.00</span>
+                    </div>
+                    <div class="bill-total-row bill-less-row">
+                      <span>Subtotal Less Discount</span><span id="br-subtotal-less">0.00</span>
+                    </div>
+                  </div>
+                  <div class="bill-amount-due">
+                    <span>Amount Due</span>
+                    <span id="br-amount-due">₹ 0.00</span>
+                  </div>
+                </div>
+              </div>
+              <!-- /bill-report -->
+            </div>
+          </main>
         </div>
-        <div style="background:#f7fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-top:4px;font-family:'Inter',sans-serif">
-          <div style="display:flex;justify-content:space-between;font-size:.85rem;color:#555;margin-bottom:6px">
-            <span>Subtotal</span><span id="bf-subtotal-display">₹ 0.00</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:.85rem;color:#555;margin-bottom:6px">
-            <span>Discount</span><span id="bf-discount-display">₹ 0.00</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:.95rem;font-weight:700;color:#1a3a5c;border-top:1.5px solid #cbd5e0;padding-top:8px;margin-top:4px">
-            <span>Amount Due</span><span id="bf-total-display">₹ 0.00</span>
-          </div>
-        </div>
+      </div>
 
-        <label style="display:flex;align-items:center;gap:8px;margin-top:12px;margin-bottom:4px;font-size:.82rem;font-weight:600;color:#2d3748;cursor:pointer;user-select:none">
-          <input type="checkbox" id="bill-print-header" style="width:16px;height:16px;accent-color:#1a3a5c;cursor:pointer">
-          Print with Header (lab letterhead)
-        </label>
-        <div class="btn-row" style="margin-top:6px">
-          <button class="btn-print" onclick="billPrint()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print
-          </button>
-          <button class="btn-share" id="bill-share-btn" onclick="billShare()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share
-          </button>
-        </div>
-        <button onclick="resetBill()" style="width:100%;margin-top:8px;padding:8px;border:1.5px solid #cbd5e0;border-radius:7px;background:#fff;color:#718096;font-size:.85rem;font-weight:600;font-family:inherit;cursor:pointer">🔄 New Bill</button>
-      </aside>
-
-      <main class="preview-panel">
-        <h2>Live Preview</h2>
-        <div class="report-scaler">
-        <div class="bill-report" id="bill-report">
-
-          <!-- OPTION A: BILL HEADER -->
-          <div class="bill-top">
-            <div class="bill-top-inner">
-              <div class="bill-left">
-                <div class="bill-lab-name">Pitrubhakta Clinical Lab</div>
-                <div class="bill-lab-tag">Computerised Diagnostic Laboratory</div>
-                <div class="bill-lab-addr">
-                  117/B, Income Tax Colony, Opp. Sharda Netralay, Nakane Road<br>
-                  Dhule - 424002 &nbsp;·&nbsp; 9422707425
-                </div>
-              </div>
-              <div class="bill-right">
-                <div class="bill-invoice-badge">Invoice</div>
-                <div class="bill-meta">
-                  <div><b>Bill No.</b><span id="br-billno">—</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- BILL TO -->
-          <div class="bill-body">
-            <div class="bill-to-box">
-              <div class="bill-to-row" style="justify-content:space-between;align-items:baseline">
-                <div style="display:flex;align-items:baseline;flex:1">
-                  <span class="bill-to-lbl">Patient Name</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-name">—</span>
-                </div>
-                <div class="bill-noheader-meta" style="display:flex;align-items:baseline;gap:6px;flex-shrink:0;margin-left:12px">
-                  <span style="font-size:10pt;font-weight:700;white-space:nowrap">Bill No.</span>
-                  <span style="font-size:10pt;font-weight:700;white-space:nowrap" id="br-billno-noheader">—</span>
-                </div>
-              </div>
-              <div class="bill-to-row" id="br-age-row" style="justify-content:space-between;align-items:baseline">
-                <div style="display:flex;align-items:baseline;flex:1">
-                  <span class="bill-to-lbl">Age</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-age">—</span>
-                </div>
-                <div class="bill-noheader-meta" style="display:flex;align-items:baseline;gap:6px;flex-shrink:0;margin-left:12px">
-                  <span style="font-size:10pt;font-weight:700;white-space:nowrap">Date</span>
-                  <span style="font-size:10pt;font-weight:700;white-space:nowrap" id="br-date-noheader">—</span>
-                </div>
-              </div>
-              <div class="bill-to-row"><span class="bill-to-lbl">Refer Doctor</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-ref">—</span></div>
-              <div class="bill-to-row"><span class="bill-to-lbl">Contact No.</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-contact"></span></div>
-              <div class="bill-to-row" id="br-location-row"><span class="bill-to-lbl">Reporting Location</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-location"></span></div>
-            </div>
-
-            <!-- ITEMS TABLE -->
-            <table class="bill-items-table">
-              <thead><tr><th>Test Name</th><th>Price</th></tr></thead>
-              <tbody id="br-items"></tbody>
-            </table>
-
-            <!-- TOTALS -->
-            <div class="bill-totals">
-              <div class="bill-total-row"><span>Subtotal</span><span id="br-subtotal">0.00</span></div>
-              <div class="bill-total-row bill-discount-row"><span>Discount</span><span id="br-discount">0.00</span></div>
-              <div class="bill-total-row bill-less-row"><span>Subtotal Less Discount</span><span id="br-subtotal-less">0.00</span></div>
-            </div>
-            <div class="bill-amount-due">
-              <span>Amount Due</span>
-              <span id="br-amount-due">₹ 0.00</span>
-            </div>
-
-            <!-- SIGNATURE + FOOTER NOTE -->
-            <div class="bill-footer-row">
-              <div class="bill-sign-area">
-                <div class="bill-sign-line"></div>
-                <div class="bill-sign-name"></div>
-                <div class="bill-sign-reg">Reg. No. PGD/MLT/0005/2021</div>
-              </div>
-              <div class="bill-footer-note">Thank you for choosing<br></div>
-            </div>
-          </div>
-
-        </div><!-- /bill-report -->
-        </div>
-      </main>
+      <!-- Bill History -->
+      <div id="bill-hist" class="sub-tab-page">
+        <div class="history-page" id="bill-hist-content"></div>
+      </div>
     </div>
-  </div>
 
-  <!-- Bill History -->
-  <div id="bill-hist" class="sub-tab-page">
-    <div class="history-page" id="bill-hist-content"></div>
-  </div>
-</div>
-
-
-
-
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      CRP/RA TEST MAIN TAB
 ════════════════════════════════════════ -->
-<div id="main-crpra" class="main-tab-page">
-  <div class="sub-tab-bar">
-    <button class="sub-tab-btn active" onclick="switchSub('crpra','form',this)">📋 Form</button>
-    <button class="sub-tab-btn" onclick="switchSub('crpra','hist',this)">🕒 History</button>
-  </div>
+    <div id="main-crpra" class="main-tab-page">
+      <div class="sub-tab-bar">
+        <button class="sub-tab-btn active" onclick="switchSub('crpra', 'form', this)">
+          Form
+        </button>
+        <button class="sub-tab-btn" onclick="switchSub('crpra', 'hist', this)">History</button>
+      </div>
 
-  <div id="crpra-form" class="sub-tab-page active">
-    <div class="workspace">
-      <aside class="form-panel">
-        <h2>Patient Details</h2>
-        <div class="field">
-          <label>Patient Name</label>
-          <div class="name-wrap">
-            <input type="text" id="cf-name" placeholder="Enter name" autocomplete="off"
-                   oninput="crpraSync();showSug('cf-name','crpra-sug','crpra')" onblur="hideSug('crpra-sug')">
-            <div class="name-suggestions" id="crpra-sug"></div>
-          </div>
-        </div>
-        <div style="display:none"><input type="text" id="cf-date" readonly></div>
-        <div class="field">
-          <label>Ref. By Dr.</label>
-          <input type="text" id="cf-ref" list="cref-opts" placeholder="Select or type..." oninput="crpraSync()">
-          <datalist id="cref-opts"><option value="None"><option value="Self"><option value="Sharda Netralay"></datalist>
-        </div>
-
-        <h2 style="margin-top:14px">Test Values</h2>
-
-        <div class="result-group">
-          <h3>CRP Test</h3>
-          <div class="field">
-            <label>Result Value (mg/dl)</label>
-            <input type="number" id="cf-crp" placeholder="e.g. 2.7" step="0.1" min="0" oninput="crpraSync()">
-          </div>
-          <div style="font-size:.75rem;color:#718096;margin-top:2px">Normal Range: 0 – 6 mg/dl</div>
-        </div>
-
-        <div class="result-group">
-          <h3>R.A. Test</h3>
-          <div class="field">
-            <label>Result Value (IU/mL)</label>
-            <input type="number" id="cf-ra" placeholder="e.g. 2.7" step="0.1" min="0" oninput="crpraSync()">
-          </div>
-          <div style="font-size:.75rem;color:#718096;margin-top:2px">Normal Range: Less than 20 IU/mL</div>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn-print" onclick="crpraPrint()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print
-          </button>
-          <button class="btn-share" id="crpra-share-btn" onclick="crpraShare()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share
-          </button>
-        </div>
-      </aside>
-
-      <main class="preview-panel">
-        <h2>Live Preview</h2>
-        <div class="report-scaler">
-        <div class="report crpra-report" id="crpra-report">
-
-          <!-- LAB HEADER (same as others) -->
-          <div class="lab-header">
-            <div class="lab-header-top">
-              <div class="microscope-circle">
-                <svg viewBox="0 0 100 100" fill="none"><rect x="44" y="8" width="12" height="22" rx="4" fill="#2d3a6e"/><rect x="40" y="28" width="20" height="8" rx="3" fill="#2d3a6e"/><rect x="44" y="34" width="12" height="28" rx="3" fill="#3a4a80"/><rect x="46" y="60" width="8" height="14" rx="3" fill="#2d3a6e"/><rect x="28" y="72" width="44" height="6" rx="3" fill="#3a5a8c"/><ellipse cx="50" cy="88" rx="26" ry="6" fill="#2d3a6e"/><rect x="38" y="36" width="8" height="40" rx="3" fill="#4a6aa0"/><ellipse cx="34" cy="55" rx="7" ry="5" fill="#5a7ab0"/><ellipse cx="34" cy="67" rx="5" ry="4" fill="#7a9ac0"/></svg>
-              </div>
-              <div class="lab-title-block">
-                <div class="lab-name"></div>
-                <div class="lab-sub">Computerised</div>
+      <div id="crpra-form" class="sub-tab-page active">
+        <div class="workspace">
+          <aside class="form-panel">
+            <h2>Patient Details</h2>
+            <div class="field">
+              <label>Patient Name</label>
+              <div class="name-wrap">
+                <input type="text" id="cf-name" placeholder="Enter name" autocomplete="off" oninput="
+                    crpraSync();
+                    showSug('cf-name', 'crpra-sug', 'crpra');
+                  " onblur="hideSug('crpra-sug')" />
+                <div class="name-suggestions" id="crpra-sug"></div>
               </div>
             </div>
-            <div class="lab-header-bottom">
-              <div class="lab-address" style="font-size:8.5pt">117/B, Income Tax Colony, Infront of Sharda Netralay,<br>Nakane Road, Deopur, Dhule- 424002<br>
-                <span class="phone"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>: 9422707425</span>
+            <div style="display: none"><input type="text" id="cf-date" readonly /></div>
+            <div class="field">
+              <label>Ref. By Dr.</label>
+              <input type="text" id="cf-ref" list="cref-opts" placeholder="Select or type..." oninput="crpraSync()" />
+              <datalist id="cref-opts">
+                <option value="None"></option>
+                <option value="Self"></option>
+                <option value="Sharda Netralay"></option>
+              </datalist>
+            </div>
+
+            <h2 style="margin-top: 14px">Test Values</h2>
+
+            <div class="result-group">
+              <h3>CRP Test</h3>
+              <div class="field">
+                <label>Result Value (mg/dl)</label>
+                <input type="number" id="cf-crp" placeholder="e.g. 2.7" step="0.1" min="0" oninput="crpraSync()" />
               </div>
-              <div class="lab-doctor" style="font-size:8.5pt">Mrs. Manjusha P. Pitrubhakta<br>B.Sc.,D.M.L.T. (Pune)<br><span class="reg">Reg. No.: PGD/MLT/0005/2021</span></div>
-            </div>
-          </div>
-
-          <!-- REPORT BODY -->
-          <div class="report-body">
-            <table class="meta-table">
-              <colgroup><col class="c-label"><col class="c-colon"><col class="c-value"><col class="c-gap"><col class="c-rlabel"><col class="c-rcolon"><col class="c-rvalue"></colgroup>
-              <tr>
-                <td class="meta-label">Patient's Name</td><td class="meta-colon">:</td>
-                <td class="meta-value" id="cr-name">—</td>
-                <td></td>
-                <td class="meta-label">Date</td><td class="meta-colon">:</td>
-                <td class="meta-value" id="cr-date">—</td>
-              </tr>
-              <tr>
-                <td class="meta-label">Ref. By Dr.</td><td class="meta-colon">:</td>
-                <td class="meta-value" id="cr-ref">—</td>
-                <td></td>
-                <td colspan="4"></td>
-              </tr>
-            </table>
-
-            <hr class="report-hr">
-
-            <!-- Dynamic title -->
-            <div class="crpra-title" id="cr-title">CRP TEST ( TURBIDOMETRY )</div>
-
-            <!-- 3-column table -->
-            <div class="crpra-col-headers">
-              <span>Test Name</span>
-              <span>Result</span>
-              <span>Normal Range</span>
+              <div style="font-size: 0.75rem; color: #718096; margin-top: 2px">
+                Normal Range: 0 – 6 mg/dl
+              </div>
             </div>
 
-            <div id="cr-rows"></div>
-
-            <div class="signature-area">SIGNATURE</div>
-          </div>
-
-          <!-- LAB FOOTER -->
-          <div class="lab-footer">
-            <div class="footer-ornament">&#x1F4D6;&#x2764;&#x1F4D6;</div>
-            <div class="footer-bar">
-              <div class="footer-text">These are only reading based on technical analysis and no opinion is indicated therefore said reading's<br>should please be got certified by pathologist before using the same for diagnosis and treatment</div>
+            <div class="result-group">
+              <h3>R.A. Test</h3>
+              <div class="field">
+                <label>Result Value (IU/mL)</label>
+                <input type="number" id="cf-ra" placeholder="e.g. 2.7" step="0.1" min="0" oninput="crpraSync()" />
+              </div>
+              <div style="font-size: 0.75rem; color: #718096; margin-top: 2px">
+                Normal Range: Less than 20 IU/mL
+              </div>
             </div>
-          </div>
 
-        </div><!-- /crpra-report -->
+            <div class="btn-row">
+              <button class="btn-print" onclick="crpraPrint()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <rect x="6" y="14" width="12" height="8" />
+                </svg>Print
+              </button>
+              <button class="btn-share" id="crpra-share-btn" onclick="crpraShare()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>Share
+              </button>
+            </div>
+          </aside>
+
+          <main class="preview-panel">
+            <h2>Live Preview</h2>
+            <div class="report-scaler">
+              <div class="report crpra-report" id="crpra-report">
+                <!-- LAB HEADER (same as others) -->
+
+                <!-- REPORT BODY -->
+                <div class="report-body">
+                  <table class="meta-table">
+                    <colgroup>
+                      <col class="c-label" />
+                      <col class="c-colon" />
+                      <col class="c-value" />
+                      <col class="c-gap" />
+                      <col class="c-rlabel" />
+                      <col class="c-rcolon" />
+                      <col class="c-rvalue" />
+                    </colgroup>
+                    <tr>
+                      <td class="meta-label">Patient's Name</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="cr-name">—</td>
+                      <td></td>
+                      <td class="meta-label">Date</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="cr-date">—</td>
+                    </tr>
+                    <tr>
+                      <td class="meta-label">Ref. By Dr.</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="cr-ref">—</td>
+                      <td colspan="4"></td>
+                    </tr>
+                  </table>
+
+                  <hr class="report-hr" />
+
+                  <!-- Dynamic title -->
+                  <div class="crpra-title" id="cr-title">CRP TEST ( TURBIDOMETRY )</div>
+
+                  <!-- 3-column table -->
+                  <div class="crpra-col-headers">
+                    <span>Test Name</span>
+                    <span>Result</span>
+                    <span>Normal Range</span>
+                  </div>
+
+                  <div id="cr-rows"></div>
+
+                  <div class="signature-area">SIGNATURE</div>
+                </div>
+
+                <!-- LAB FOOTER -->
+              </div>
+              <!-- /crpra-report -->
+            </div>
+          </main>
         </div>
-      </main>
+      </div>
+
+      <!-- CRP/RA History -->
+      <div id="crpra-hist" class="sub-tab-page">
+        <div class="history-page" id="crpra-hist-content"></div>
+      </div>
     </div>
-  </div>
 
-  <!-- CRP/RA History -->
-  <div id="crpra-hist" class="sub-tab-page">
-    <div class="history-page" id="crpra-hist-content"></div>
-  </div>
-</div>
-
-
-
-
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      BIO-CHEMISTRY MAIN TAB
 ════════════════════════════════════════ -->
-<div id="main-biochem" class="main-tab-page">
-  <div class="sub-tab-bar">
-    <button class="sub-tab-btn active" onclick="switchSub('biochem','form',this)">📋 Form</button>
-    <button class="sub-tab-btn" onclick="switchSub('biochem','hist',this)">🕒 History</button>
-  </div>
+    <div id="main-biochem" class="main-tab-page">
+      <div class="sub-tab-bar">
+        <button class="sub-tab-btn active" onclick="switchSub('biochem', 'form', this)">
+          Form
+        </button>
+        <button class="sub-tab-btn" onclick="switchSub('biochem', 'hist', this)">History</button>
+      </div>
 
-  <div id="biochem-form" class="sub-tab-page active">
-    <div class="workspace">
-      <aside class="form-panel">
-        <h2>Patient Details</h2>
-        <div class="field">
-          <label>Patient Name</label>
-          <div class="name-wrap">
-            <input type="text" id="bcf-name" placeholder="Enter name" autocomplete="off"
-                   oninput="biochemSync();showSug('bcf-name','biochem-sug','biochem')" onblur="hideSug('biochem-sug')">
-            <div class="name-suggestions" id="biochem-sug"></div>
-          </div>
-        </div>
-        <div style="display:none"><input type="text" id="bcf-date" readonly></div>
-        <div class="field">
-          <label>Ref. By Dr.</label>
-          <input type="text" id="bcf-ref" list="bcref-opts" placeholder="Select or type..." oninput="biochemSync()">
-          <datalist id="bcref-opts"><option value="None"><option value="Self"><option value="Sharda Netralay"></datalist>
-        </div>
-
-        <h2 style="margin-top:14px">Test Values</h2>
-
-        <div class="field"><label>Blood Urea (mg/dl)</label><input type="number" id="bcf-urea" placeholder="e.g. 25.0" step="0.1" min="0" oninput="biochemSync()"></div>
-        <div class="field"><label>S.Creatinine (mg/dl)</label><input type="number" id="bcf-creat" placeholder="e.g. 0.9" step="0.1" min="0" oninput="biochemSync()"></div>
-        <div class="field"><label>S.Uric Acid (mg/dl)</label><input type="number" id="bcf-uric" placeholder="e.g. 4.4" step="0.1" min="0" oninput="biochemSync()"></div>
-
-        <div class="result-group">
-          <h3>S.Bilirubin</h3>
-          <div class="field"><label>Total (mg/dl)</label><input type="number" id="bcf-bil-total" placeholder="e.g. 0.7" step="0.1" min="0" oninput="biochemSync()"></div>
-          <div class="field"><label>Direct (mg/dl)</label><input type="number" id="bcf-bil-direct" placeholder="e.g. 0.4" step="0.1" min="0" oninput="biochemSync()"></div>
-          <div class="field"><label>Indirect (mg/dl)</label><input type="number" id="bcf-bil-indirect" placeholder="e.g. 0.3" step="0.1" min="0" oninput="biochemSync()"></div>
-        </div>
-
-        <div class="field"><label>S.G.O.T. (IU/L)</label><input type="number" id="bcf-sgot" placeholder="e.g. 22.0" step="0.1" min="0" oninput="biochemSync()"></div>
-        <div class="field"><label>S.G.P.T. (IU/L)</label><input type="number" id="bcf-sgpt" placeholder="e.g. 27.0" step="0.1" min="0" oninput="biochemSync()"></div>
-        <div class="field"><label>Serum Total Cholesterol (mg/dl)</label><input type="number" id="bcf-chol" placeholder="e.g. 145.0" step="0.1" min="0" oninput="biochemSync()"></div>
-        <div class="field"><label>Serum Triglycerides (mg/dl)</label><input type="number" id="bcf-trig" placeholder="e.g. 125.0" step="0.1" min="0" oninput="biochemSync()"></div>
-        <div class="field"><label>HDL-Cholesterol (mg/dl)</label><input type="number" id="bcf-hdl" placeholder="e.g. 55.0" step="0.1" min="0" oninput="biochemSync()"></div>
-        <div class="field"><label>LDL-Cholesterol (mg/dl)</label><input type="number" id="bcf-ldl" placeholder="e.g. 75.0" step="0.1" min="0" oninput="biochemSync()"></div>
-
-        <div class="btn-row">
-          <button class="btn-print" onclick="biochemPrint()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Print
-          </button>
-          <button class="btn-share" id="biochem-share-btn" onclick="biochemShare()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share
-          </button>
-        </div>
-      </aside>
-
-      <main class="preview-panel">
-        <h2>Live Preview</h2>
-        <div class="report-scaler">
-        <div class="report" id="biochem-report">
-
-          <!-- LAB HEADER -->
-          <div class="lab-header">
-            <div class="lab-header-top">
-              <div class="microscope-circle">
-                <svg viewBox="0 0 100 100" fill="none"><rect x="44" y="8" width="12" height="22" rx="4" fill="#2d3a6e"/><rect x="40" y="28" width="20" height="8" rx="3" fill="#2d3a6e"/><rect x="44" y="34" width="12" height="28" rx="3" fill="#3a4a80"/><rect x="46" y="60" width="8" height="14" rx="3" fill="#2d3a6e"/><rect x="28" y="72" width="44" height="6" rx="3" fill="#3a5a8c"/><ellipse cx="50" cy="88" rx="26" ry="6" fill="#2d3a6e"/><rect x="38" y="36" width="8" height="40" rx="3" fill="#4a6aa0"/><ellipse cx="34" cy="55" rx="7" ry="5" fill="#5a7ab0"/><ellipse cx="34" cy="67" rx="5" ry="4" fill="#7a9ac0"/></svg>
-              </div>
-              <div class="lab-title-block">
-                <div class="lab-name"></div>
-                <div class="lab-sub">Computerised</div>
+      <div id="biochem-form" class="sub-tab-page active">
+        <div class="workspace">
+          <aside class="form-panel">
+            <h2>Patient Details</h2>
+            <div class="field">
+              <label>Patient Name</label>
+              <div class="name-wrap">
+                <input type="text" id="bcf-name" placeholder="Enter name" autocomplete="off" oninput="
+                    biochemSync();
+                    showSug('bcf-name', 'biochem-sug', 'biochem');
+                  " onblur="hideSug('biochem-sug')" />
+                <div class="name-suggestions" id="biochem-sug"></div>
               </div>
             </div>
-            <div class="lab-header-bottom">
-              <div class="lab-address">117/B, Income Tax Colony, Infront of Sharda Netralay,<br>Nakane Road, Deopur, Dhule- 424002<br>
-                <span class="phone"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>: 9422707425</span>
+            <div style="display: none"><input type="text" id="bcf-date" readonly /></div>
+            <div class="field">
+              <label>Ref. By Dr.</label>
+              <input type="text" id="bcf-ref" list="bcref-opts" placeholder="Select or type..." oninput="biochemSync()" />
+              <datalist id="bcref-opts">
+                <option value="None"></option>
+                <option value="Self"></option>
+                <option value="Sharda Netralay"></option>
+              </datalist>
+            </div>
+
+            <h2 style="margin-top: 14px">Test Values</h2>
+
+            <div class="field">
+              <label>Blood Urea (mg/dl)</label><input type="number" id="bcf-urea" placeholder="e.g. 25.0" step="0.1" min="0" oninput="biochemSync()" />
+            </div>
+            <div class="field">
+              <label>S.Creatinine (mg/dl)</label><input type="number" id="bcf-creat" placeholder="e.g. 0.9" step="0.1" min="0" oninput="biochemSync()" />
+            </div>
+            <div class="field">
+              <label>S.Uric Acid (mg/dl)</label><input type="number" id="bcf-uric" placeholder="e.g. 4.4" step="0.1" min="0" oninput="biochemSync()" />
+            </div>
+
+            <div class="result-group">
+              <h3>S.Bilirubin</h3>
+              <div class="field">
+                <label>Total (mg/dl)</label><input type="number" id="bcf-bil-total" placeholder="e.g. 0.7" step="0.1" min="0" oninput="biochemSync()" />
               </div>
-              <div class="lab-doctor">Mrs. Manjusha P. Pitrubhakta<br>B.Sc.,D.M.L.T. (Pune)<br><span class="reg">Reg. No.: PGD/MLT/0005/2021</span></div>
-            </div>
-          </div>
-
-          <!-- REPORT BODY -->
-          <div class="report-body">
-            <table class="meta-table">
-              <colgroup><col class="c-label"><col class="c-colon"><col class="c-value"><col class="c-gap"><col class="c-rlabel"><col class="c-rcolon"><col class="c-rvalue"></colgroup>
-              <tr>
-                <td class="meta-label">Patient's Name</td><td class="meta-colon">:</td>
-                <td class="meta-value" id="bcr-name">—</td>
-                <td></td>
-                <td class="meta-label">Date</td><td class="meta-colon">:</td>
-                <td class="meta-value" id="bcr-date">—</td>
-              </tr>
-              <tr>
-                <td class="meta-label">Ref. By Dr.</td><td class="meta-colon">:</td>
-                <td class="meta-value" id="bcr-ref">—</td>
-                <td></td>
-                <td colspan="4"></td>
-              </tr>
-            </table>
-
-            <hr class="report-hr">
-            <div class="report-title" style="letter-spacing:.15em">Bio - Chemistry Report</div>
-
-            <!-- 3-column headers -->
-            <div class="bc-col-headers">
-              <span>Test Name</span>
-              <span>Result</span>
-              <span>Normal Range</span>
+              <div class="field">
+                <label>Direct (mg/dl)</label><input type="number" id="bcf-bil-direct" placeholder="e.g. 0.4" step="0.1" min="0" oninput="biochemSync()" />
+              </div>
+              <div class="field">
+                <label>Indirect (mg/dl)</label><input type="number" id="bcf-bil-indirect" placeholder="e.g. 0.3" step="0.1" min="0" oninput="biochemSync()" />
+              </div>
             </div>
 
-            <div id="bcr-rows"></div>
-
-            <div class="signature-area">SIGNATURE</div>
-          </div>
-
-          <!-- LAB FOOTER -->
-          <div class="lab-footer">
-            <div class="footer-ornament">&#x1F4D6;&#x2764;&#x1F4D6;</div>
-            <div class="footer-bar">
-              <div class="footer-text">These are only reading based on technical analysis and no opinion is indicated therefore said reading's<br>should please be got certified by pathologist before using the same for diagnosis and treatment</div>
+            <div class="field">
+              <label>S.G.O.T. (IU/L)</label><input type="number" id="bcf-sgot" placeholder="e.g. 22.0" step="0.1" min="0" oninput="biochemSync()" />
             </div>
-          </div>
+            <div class="field">
+              <label>S.G.P.T. (IU/L)</label><input type="number" id="bcf-sgpt" placeholder="e.g. 27.0" step="0.1" min="0" oninput="biochemSync()" />
+            </div>
+            <div class="field">
+              <label>Serum Total Cholesterol (mg/dl)</label><input type="number" id="bcf-chol" placeholder="e.g. 145.0" step="0.1" min="0" oninput="biochemSync()" />
+            </div>
+            <div class="field">
+              <label>Serum Triglycerides (mg/dl)</label><input type="number" id="bcf-trig" placeholder="e.g. 125.0" step="0.1" min="0" oninput="biochemSync()" />
+            </div>
+            <div class="field">
+              <label>HDL-Cholesterol (mg/dl)</label><input type="number" id="bcf-hdl" placeholder="e.g. 55.0" step="0.1" min="0" oninput="biochemSync()" />
+            </div>
+            <div class="field">
+              <label>LDL-Cholesterol (mg/dl)</label><input type="number" id="bcf-ldl" placeholder="e.g. 75.0" step="0.1" min="0" oninput="biochemSync()" />
+            </div>
 
-        </div><!-- /biochem-report -->
+            <div class="btn-row">
+              <button class="btn-print" onclick="biochemPrint()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 6 2 18 2 18 9" />
+                  <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                  <rect x="6" y="14" width="12" height="8" />
+                </svg>Print
+              </button>
+              <button class="btn-share" id="biochem-share-btn" onclick="biochemShare()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>Share
+              </button>
+            </div>
+          </aside>
+
+          <main class="preview-panel">
+            <h2>Live Preview</h2>
+            <div class="report-scaler">
+              <div class="report" id="biochem-report">
+                <!-- LAB HEADER -->
+
+                <!-- REPORT BODY -->
+                <div class="report-body">
+                  <table class="meta-table">
+                    <colgroup>
+                      <col class="c-label" />
+                      <col class="c-colon" />
+                      <col class="c-value" />
+                      <col class="c-gap" />
+                      <col class="c-rlabel" />
+                      <col class="c-rcolon" />
+                      <col class="c-rvalue" />
+                    </colgroup>
+                    <tr>
+                      <td class="meta-label">Patient's Name</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="bcr-name">—</td>
+                      <td></td>
+                      <td class="meta-label">Date</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="bcr-date">—</td>
+                    </tr>
+                    <tr>
+                      <td class="meta-label">Ref. By Dr.</td>
+                      <td class="meta-colon">:</td>
+                      <td class="meta-value" id="bcr-ref">—</td>
+                      <td colspan="4"></td>
+                    </tr>
+                  </table>
+
+                  <hr class="report-hr" />
+                  <div class="report-title" style="letter-spacing: 0.15em">
+                    Bio - Chemistry Report
+                  </div>
+
+                  <!-- 3-column headers -->
+                  <div class="bc-col-headers">
+                    <span>Test Name</span>
+                    <span>Result</span>
+                    <span>Normal Range</span>
+                  </div>
+
+                  <div id="bcr-rows"></div>
+
+                  <div class="signature-area">SIGNATURE</div>
+                </div>
+
+                <!-- LAB FOOTER -->
+              </div>
+              <!-- /biochem-report -->
+            </div>
+          </main>
         </div>
-      </main>
+      </div>
+
+      <!-- Bio-Chemistry History -->
+      <div id="biochem-hist" class="sub-tab-page">
+        <div class="history-page" id="biochem-hist-content"></div>
+      </div>
     </div>
-  </div>
 
-  <!-- Bio-Chemistry History -->
-  <div id="biochem-hist" class="sub-tab-page">
-    <div class="history-page" id="biochem-hist-content"></div>
-  </div>
-</div>
-
-
-
-
-
-<!-- ════════════════════════════════════════
+    <!-- ════════════════════════════════════════
      SETTINGS TAB
 ════════════════════════════════════════ -->
-<div id="main-settings" class="main-tab-page">
-  <div class="settings-page">
-    <div class="settings-header">
-      <h2>⚙️ Print Margin Settings</h2>
-      <p>Set the spacing for each report type separately. These values are saved permanently and used every time you print.</p>
-    </div>
+    <div id="main-settings" class="main-tab-page">
+      <div class="settings-page">
+        <div class="settings-header">
+          <h2>Print Margin Settings</h2>
+          <p>
+            Set the spacing for each report type separately. These values are saved permanently and
+            used every time you print.
+          </p>
+        </div>
 
-    <div class="settings-grid" id="settings-grid"></div>
-  </div>
-</div>
-<script src="node_modules/html2canvas/dist/html2canvas.min.js"></script>
-<script src="renderer.js"></script>
-</body>
+        <div class="settings-grid" id="settings-grid"></div>
+      </div>
+    </div>
+    <script src="node_modules/html2canvas/dist/html2canvas.min.js"></script>
+    <script src="renderer.js"></script>
+  </body>
+
 </html>
