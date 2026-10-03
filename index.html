@@ -39,10 +39,10 @@
         <button class="main-tab-btn" onclick="switchMain('crpra', this)">CRP/RA</button>
         <button class="main-tab-btn" onclick="switchMain('bill', this)">Bill</button>
         <button class="main-tab-btn" onclick="switchMain('allhistory', this)">History</button>
-        <button class="main-tab-btn" onclick="switchMain('settings', this)" id="settings-tab-btn">
+        <button class="main-tab-btn" onclick="switchMain('settings', this)">
           Settings
         </button>
-        <button class="main-tab-btn" onclick="switchMain('templates', this)" style="display: none">
+        <button class="main-tab-btn" onclick="switchMain('templates', this)">
           Templates
         </button>
       </div>
@@ -234,7 +234,10 @@
                     <div class="test-method">[ Immunochromatography Method ]</div>
                   </div>
                   <div style="margin-top: 7.5em"></div>
-                  <div class="signature-area">SIGNATURE</div>
+                  <div class="report-closing">
+                    <span>Thanks !</span>
+                    <span class="report-closing-signature">SIGNATURE</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -780,13 +783,9 @@ Nil</textarea>
                       <td class="bs-meta-spacer"></td>
                       <td class="bs-meta-spacer"></td>
                       <td class="bs-meta-value" id="bsr-ref">—</td>
-                      <td class="bs-meta-right">
-                        <span>Date</span>
-                        <span id="bsr-date">—</span>
-                      </td>
+                      <td class="bs-meta-right"><span id="bsr-date">—</span></td>
                     </tr>
                   </table>
-                  <hr class="report-hr" />
 
                   <div class="bs-report-title">Blood Sugar Report</div>
                   <div class="bs-test-header">
@@ -796,6 +795,10 @@ Nil</textarea>
                   </div>
 
                   <div id="bs-sections"></div>
+                  <div class="report-closing bs-report-footer">
+                    <span>Thanks !</span>
+                    <span class="report-closing-signature">SIGNATURE</span>
+                  </div>
                 </div>
               </div>
               <!-- /bs-report -->
@@ -846,6 +849,14 @@ Nil</textarea>
               <input type="text" id="bf-age" placeholder="e.g. 49 Yrs" oninput="billSync()" />
             </div>
             <div class="field">
+              <label>Gender</label>
+              <select id="bf-gender" onchange="billSync()">
+                <option value="">-- Select --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <div class="field">
               <label>Contact No.</label>
               <input type="text" id="bf-contact" placeholder="e.g. 9422707425" oninput="billSync()" />
             </div>
@@ -853,9 +864,12 @@ Nil</textarea>
               <label>Reporting Location</label>
               <input type="text" id="bf-location" placeholder="e.g. Accura Diagnostics" oninput="billSync()" />
             </div>
+            <div class="field">
+              <label>Date</label>
+              <input type="date" id="bf-date" oninput="billSync()" />
+            </div>
             <div style="display: none">
               <input type="text" id="bf-billno" readonly />
-              <input type="text" id="bf-date" readonly />
             </div>
 
             <h2 style="margin-top: 14px">Test Items</h2>
@@ -918,7 +932,7 @@ Nil</textarea>
                   padding-top: 8px;
                   margin-top: 4px;
                 ">
-                <span>Amount Due</span><span id="bf-total-display">₹ 0.00</span>
+                <span>Total Amount</span><span id="bf-total-display">₹ 0.00</span>
               </div>
             </div>
 
@@ -963,52 +977,37 @@ Nil</textarea>
               <div class="bill-report" id="bill-report">
                 <!-- BILL TO -->
                 <div class="bill-body">
-                  <div class="bill-clinic-info">
-                    <div class="bill-clinic-name">Pitrubhakta Clinical Lab</div>
-                    <div class="bill-clinic-address">
-                      117/B, Income Tax Colony, Opp. Sharda Netralay, Nakane Road, Dhule - 424002
-                    </div>
-                    <div class="bill-clinic-contact">9422707425</div>
-                  </div>
+                  <div class="bill-title">Invoice Receipt</div>
                   <div class="bill-to-box">
-                    <div class="bill-to-row" style="justify-content: space-between; align-items: baseline">
-                      <div style="display: flex; align-items: baseline; flex: 1">
-                        <span class="bill-to-lbl">Patient Name</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-name">—</span>
+                    <div class="bill-details-grid">
+                      <div class="bill-detail">
+                        <span class="bill-detail-label">Patient Name</span>
+                        <span class="bill-detail-value" id="br-name">—</span>
                       </div>
-                      <div style="
-                          display: flex;
-                          align-items: baseline;
-                          gap: 6px;
-                          flex-shrink: 0;
-                          margin-left: 12px;
-                        ">
-                        <span style="font-size: 10pt; font-weight: 700; white-space: nowrap">Bill No.</span>
-                        <span style="font-size: 10pt; font-weight: 700; white-space: nowrap" id="br-billno">—</span>
+                      <div class="bill-detail">
+                        <span class="bill-detail-label">Date</span>
+                        <span class="bill-detail-value" id="br-date">—</span>
                       </div>
-                    </div>
-                    <div class="bill-to-row" id="br-age-row" style="justify-content: space-between; align-items: baseline">
-                      <div style="display: flex; align-items: baseline; flex: 1">
-                        <span class="bill-to-lbl">Age</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-age">—</span>
+                      <div class="bill-detail" id="br-age-field">
+                        <span class="bill-detail-label">Age</span>
+                        <span class="bill-detail-value" id="br-age">—</span>
                       </div>
-                      <div style="
-                          display: flex;
-                          align-items: baseline;
-                          gap: 6px;
-                          flex-shrink: 0;
-                          margin-left: 12px;
-                        ">
-                        <span style="font-size: 10pt; font-weight: 700; white-space: nowrap">Date</span>
-                        <span style="font-size: 10pt; font-weight: 700; white-space: nowrap" id="br-date">—</span>
+                      <div class="bill-detail" id="br-gender-field">
+                        <span class="bill-detail-label">Gender</span>
+                        <span class="bill-detail-value" id="br-gender"></span>
                       </div>
-                    </div>
-                    <div class="bill-to-row">
-                      <span class="bill-to-lbl">Refer Doctor</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-ref">—</span>
-                    </div>
-                    <div class="bill-to-row">
-                      <span class="bill-to-lbl">Contact No.</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-contact"></span>
-                    </div>
-                    <div class="bill-to-row" id="br-location-row">
-                      <span class="bill-to-lbl">Reporting Location</span><span class="bill-to-colon">:</span><span class="bill-to-val" id="br-location"></span>
+                      <div class="bill-detail" id="br-ref-field">
+                        <span class="bill-detail-label">Refer Doctor</span>
+                        <span class="bill-detail-value" id="br-ref">—</span>
+                      </div>
+                      <div class="bill-detail" id="br-contact-field">
+                        <span class="bill-detail-label">Contact No.</span>
+                        <span class="bill-detail-value" id="br-contact"></span>
+                      </div>
+                      <div class="bill-detail" id="br-location-field">
+                        <span class="bill-detail-label">Reporting Location</span>
+                        <span class="bill-detail-value" id="br-location"></span>
+                      </div>
                     </div>
                   </div>
 
@@ -1017,7 +1016,7 @@ Nil</textarea>
                     <thead>
                       <tr>
                         <th>Test Name</th>
-                        <th>Price</th>
+                        <th>Amount (₹)</th>
                       </tr>
                     </thead>
                     <tbody id="br-items"></tbody>
@@ -1025,19 +1024,21 @@ Nil</textarea>
 
                   <!-- TOTALS -->
                   <div class="bill-totals">
-                    <div class="bill-total-row">
-                      <span>Subtotal</span><span id="br-subtotal">0.00</span>
-                    </div>
                     <div class="bill-total-row bill-discount-row">
                       <span>Discount</span><span id="br-discount">0.00</span>
                     </div>
-                    <div class="bill-total-row bill-less-row">
-                      <span>Subtotal Less Discount</span><span id="br-subtotal-less">0.00</span>
-                    </div>
                   </div>
                   <div class="bill-amount-due">
-                    <span>Amount Due</span>
+                    <span>Total Amount</span>
                     <span id="br-amount-due">₹ 0.00</span>
+                  </div>
+                  <div class="bill-amount-words" id="br-amount-words"></div>
+                  <div class="report-closing bill-footer">
+                    <div class="bill-footer-left">
+                      <span>Thanks !</span>
+                      <span>Pitrubhakt Clinical Laboratory</span>
+                    </div>
+                    <span class="report-closing-signature">SIGNATURE</span>
                   </div>
                 </div>
               </div>
@@ -1094,11 +1095,11 @@ Nil</textarea>
             <div class="result-group">
               <h3>CRP Test</h3>
               <div class="field">
-                <label>Result Value (mg/dl)</label>
+                <label>Result Value (mg/L)</label>
                 <input type="number" id="cf-crp" placeholder="e.g. 2.7" step="0.1" min="0" oninput="crpraSync()" />
               </div>
               <div style="font-size: 0.75rem; color: #718096; margin-top: 2px">
-                Normal Range: 0 – 6 mg/dl
+                Normal Range: 0 – 6 mg/L
               </div>
             </div>
 
@@ -1182,7 +1183,10 @@ Nil</textarea>
 
                   <div id="cr-rows"></div>
 
-                  <div class="signature-area">SIGNATURE</div>
+                  <div class="report-closing">
+                    <span>Thanks !</span>
+                    <span class="report-closing-signature">SIGNATURE</span>
+                  </div>
                 </div>
 
                 <!-- LAB FOOTER -->
@@ -1348,7 +1352,10 @@ Nil</textarea>
 
                   <div id="bcr-rows"></div>
 
-                  <div class="signature-area">SIGNATURE</div>
+                  <div class="report-closing">
+                    <span>Thanks !</span>
+                    <span class="report-closing-signature">SIGNATURE</span>
+                  </div>
                 </div>
 
                 <!-- LAB FOOTER -->
@@ -1381,7 +1388,8 @@ Nil</textarea>
         <div class="settings-grid" id="settings-grid"></div>
       </div>
     </div>
-    <script src="node_modules/html2canvas/dist/html2canvas.min.js"></script>
+    <script src="vendor/html2canvas.min.js"></script>
+    <script src="vendor/en-IN.min.js"></script>
     <script src="renderer.js"></script>
   </body>
 

@@ -219,7 +219,6 @@ function openDB() {
 }
 function saveRec(rec) {
   return new Promise(async (res, rej) => {
-    // Check if limit is unlocked
     const tx = db.transaction(STORE, 'readwrite');
     const r = tx.objectStore(STORE).add(rec);
     r.onsuccess = () => res(r.result);
@@ -276,79 +275,6 @@ async function saveReportForPrint(type, record) {
       }
     });
   await session.queue;
-}
-
-/* ══ Secret unlock — type secret code in any name field ══ */
-const _SECRET = 'GAURAV8485';
-const _BACKUP_SECRET = 'BACKUP8485';
-function checkSecretCode(val) {
-  if (val.trim() === _SECRET) {
-    localStorage.setItem('_pcl_unlocked', 'true');
-    const activeInput = document.activeElement;
-    if (activeInput) activeInput.value = '';
-    showToast('Limit removed', '#1a3a5c');
-    return true;
-  }
-  if (val.trim() === 'LOCK_PCL') {
-    localStorage.removeItem('_pcl_unlocked');
-    const activeInput = document.activeElement;
-    if (activeInput) activeInput.value = '';
-    showToast('Limit restored', '#dc2626');
-    return true;
-  }
-  if (val.trim() === 'SETTING8485') {
-    localStorage.setItem('_pcl_settings', 'true');
-    const activeInput = document.activeElement;
-    if (activeInput) activeInput.value = '';
-    const el = document.querySelector('.main-tab-btn[onclick*="settings"]');
-    if (el) el.style.display = '';
-    showToast('Settings enabled', '#1a3a5c');
-    return true;
-  }
-  if (val.trim() === 'HIDE_SETTING') {
-    localStorage.removeItem('_pcl_settings');
-    const activeInput = document.activeElement;
-    if (activeInput) activeInput.value = '';
-    const el = document.querySelector('.main-tab-btn[onclick*="settings"]');
-    if (el) el.style.display = 'none';
-    showToast('Settings hidden', '#dc2626');
-    return true;
-  }
-  if (val.trim() === _BACKUP_SECRET) {
-    localStorage.setItem('_pcl_backup', 'true');
-    const activeInput = document.activeElement;
-    if (activeInput) activeInput.value = '';
-    // Try to show existing element
-    const el = document.getElementById('backup-btns-area');
-    if (el) {
-      el.style.display = 'flex';
-    } else {
-      // History tab not opened yet — switch to it and re-render
-      document.querySelectorAll('.main-tab-page').forEach((p) => p.classList.remove('active'));
-      document.querySelectorAll('.main-tab-btn').forEach((b) => b.classList.remove('active'));
-      document.getElementById('main-allhistory').classList.add('active');
-      document.querySelectorAll('.main-tab-btn')[6].classList.add('active');
-      document.getElementById('all-hist-content').innerHTML = '';
-      renderHistory('all', 'all-hist-content');
-      // After render, show the buttons
-      setTimeout(() => {
-        const el2 = document.getElementById('backup-btns-area');
-        if (el2) el2.style.display = 'flex';
-      }, 300);
-    }
-    showToast('Backup controls enabled', '#1a3a5c');
-    return true;
-  }
-  if (val.trim() === 'HIDE_BACKUP') {
-    localStorage.removeItem('_pcl_backup');
-    const activeInput = document.activeElement;
-    if (activeInput) activeInput.value = '';
-    const el = document.getElementById('backup-btns-area');
-    if (el) el.style.display = 'none';
-    showToast('Backup controls hidden', '#dc2626');
-    return true;
-  }
-  return false;
 }
 
 function showToast(msg, bg) {
@@ -821,6 +747,7 @@ function haemoSync() {
   // Differential
   const hasDiff = hv('hf-neut') || hv('hf-lymp') || hv('hf-eosi') || hv('hf-mono') || hv('hf-baso');
   if (hasDiff) {
+    html += `<div style="margin:10px 0">`;
     html += `<div style="font-size:11pt;font-weight:700;padding:3px 0"><b>Differential :</b></div>`;
     const diffRow = (label, val, range) =>
       `<div style="display:flex;font-size:11pt;padding:1px 0;line-height:1.5;font-family:inherit"><span style="flex:0 0 38%;padding-left:18px">${label}</span><span style="flex:0 0 10%;text-align:right;padding-right:8px">${val}</span><span style="flex:0 0 12%">%</span><span style="flex:1">${range}</span></div>`;
@@ -829,7 +756,7 @@ function haemoSync() {
     if (hv('hf-eosi')) html += diffRow('Eosinophils', hv('hf-eosi'), '1 - 6%');
     if (hv('hf-mono')) html += diffRow('Monocytes', hv('hf-mono'), '2 - 10%');
     if (hv('hf-baso')) html += diffRow('Basophils', hv('hf-baso'), '0 - 1%');
-    html += gap();
+    html += `</div>`;
   }
 
   // Platelets
@@ -858,8 +785,9 @@ function haemoSync() {
   if (hv('hf-sugar')) {
     const sugarRaw = parseFloat(hv('hf-sugar'));
     const sugarVal = isNaN(sugarRaw) ? hv('hf-sugar') : sugarRaw.toFixed(1);
-    html += `<div style="height:8px"></div>`;
+    html += `<div style="margin:10px 0">`;
     html += line('Blood Sugar (Random)', sugarVal + ' mg/dl', '70-140 mg/dl', { underline: true });
+    html += `</div>`;
   }
 
   // Urine Exam
@@ -867,9 +795,10 @@ function haemoSync() {
     usg = hv('hf-usg'),
     mic = hv('hf-mic');
   if (alb || usg || mic) {
+    html += `<div style="margin:10px 0">`;
     html += `<div style="display:flex;font-size:11pt;padding:3px 0;line-height:1.5;font-family:inherit">
-      <span style="flex:0 0 38%"><b><u>Urine Exam</u></b></span>
-      <span style="flex:1">
+      <span style="flex:0 0 38%"><b>Urine Exam</b></span>
+      <span style="flex:1;padding-left:16px">
         ${alb ? `<div style="display:flex"><span style="width:90px">Albumin</span><span style="width:14px">:</span><span>${alb}</span></div>` : ''}
         ${usg ? `<div style="display:flex"><span style="width:90px">Sugar</span><span style="width:14px">:</span><span>${usg}</span></div>` : ''}
         ${
@@ -883,12 +812,13 @@ function haemoSync() {
         }
       </span>
     </div>`;
+    html += `</div>`;
   }
 
   // BT / CT
   if (hv('hf-bt'))
-    html += line('Bleeding Time (B.T.)', hv('hf-bt'), '1-4 Min', { underline: true });
-  if (hv('hf-ct')) html += line('Clotting Time (CT)', hv('hf-ct'), '4-10 Min', { underline: true });
+    html += line('Bleeding Time (B.T.)', hv('hf-bt'), '1-4 Min');
+  if (hv('hf-ct')) html += line('Clotting Time (CT)', hv('hf-ct'), '4-10 Min');
 
   // HCV
   if (hv('hf-hcv')) {
@@ -896,23 +826,21 @@ function haemoSync() {
     html += `<div style="display:flex;font-size:11pt;padding:3px 0;line-height:1.5;font-family:inherit">
     <span style="flex:0 0 38%"><b><u>HCV Test</u></b></span>
     <span style="flex:0 0 22%">${hv('hf-hcv')}</span>
-    <span style="flex:1;white-space:nowrap">[ Immunochromatography Method ]</span>
+    <span style="flex:1;white-space:nowrap;font-size:9pt;line-height:1.6;color:#333">[ Immunochromatography Method ]</span>
   </div>`;
   }
 
   // Australia Antigen
   if (hv('hf-aat')) {
-    html += `<div style="height:6px"></div>`;
-    html += `<div style="display:flex;font-size:11pt;padding:3px 0;line-height:1.5;font-family:inherit"><span style="flex:0 0 38%"><b><u>Australia Antigen Test</u></b></span><span style="flex:0 0 22%">${hv('hf-aat')}</span><span style="flex:1;white-space:nowrap">[ Immunochromatography Method ]</span></div>`;
+    html += `<div style="display:flex;font-size:11pt;padding:3px 0;margin:10px 0;line-height:1.5;font-family:inherit"><span style="flex:0 0 38%"><b><u>Australia Antigen Test</u></b></span><span style="flex:0 0 22%">${hv('hf-aat')}</span><span style="flex:1;white-space:nowrap;font-size:9pt;line-height:1.6;color:#333">[ Immunochromatography Method ]</span></div>`;
   }
 
-  // HIV — value spans full remaining width so it fits on one line
+  // HIV
   if (hv('hf-hiv')) {
-    html += `<div style="height:6px"></div>`;
-    html += `<div style="display:flex;font-size:11pt;padding:3px 0;line-height:1.5;font-family:inherit"><span style="flex:0 0 38%;font-size:11pt"><b><u>H.I.V Antibody ( HIV-I & II )</u></b></span><span style="flex:1;font-size:11pt;white-space:nowrap">${hv('hf-hiv')}</span></div>`;
-    html += `<div style="font-size:9pt;padding:1px 0;line-height:1.6;color:#333;padding-left:38%">(This is a rapid diagnostic Test.<br>Done by Device mtd.)</div>`;
+    html += `<div style="display:flex;font-size:11pt;padding:3px 0;margin:10px 0;line-height:1.5;font-family:inherit"><span style="flex:0 0 38%;font-size:11pt"><b><u>H.I.V Antibody ( HIV-I & II )</u></b></span><span style="flex:0 0 22%;font-size:11pt;white-space:nowrap">${hv('hf-hiv')}</span><span style="flex:1;font-size:9pt;line-height:1.6;color:#333">(This is a rapid diagnostic Test.<br>Done by Device mtd.)</span></div>`;
   }
 
+  html += `<div class="report-closing"><span>Thanks !</span><span class="report-closing-signature">SIGNATURE</span></div>`;
   document.getElementById('haemo-table-body').innerHTML = html;
 }
 
@@ -1479,7 +1407,7 @@ async function renderHistory(typeFilter, containerId) {
     ${typeFilter === 'sero' ? '<th>HBsAg</th><th>HIV</th>' : ''}
     ${typeFilter === 'haemo' ? '<th>HB</th><th>WBC</th><th>Platelets</th>' : ''}
     ${typeFilter === 'bs' ? '<th>Random</th><th>Fasting</th><th>Post-PP</th>' : ''}
-    ${typeFilter === 'bill' ? '<th>Items</th><th>Subtotal</th><th>Discount</th><th>Amount Due</th>' : ''}
+    ${typeFilter === 'bill' ? '<th>Items</th><th>Subtotal</th><th>Discount</th><th>Total Amount</th>' : ''}
     ${typeFilter === 'crpra' ? '<th>CRP</th><th>RA</th>' : ''}
     ${typeFilter === 'biochem' ? '<th>Blood Urea</th><th>S.Creatinine</th><th>SGOT</th><th>SGPT</th>' : ''}
     ${typeFilter === 'all' ? '<th>Key Result</th>' : ''}
@@ -1498,7 +1426,7 @@ async function renderHistory(typeFilter, containerId) {
     ${typeFilter === 'haemo' ? `<td>${r.hb || '—'}</td><td>${r.wbc || '—'}</td><td>${r.plat || '—'}</td>` : ''}
     ${typeFilter === 'bs' ? `<td>${r.rVal ? r.rVal + ' mg/dl' : '—'}</td><td>${r.fVal ? r.fVal + ' mg/dl' : '—'}</td><td>${r.pVal ? r.pVal + ' mg/dl' : '—'}</td>` : ''}
     ${typeFilter === 'bill' ? `<td>${r.items ? r.items.length : 0} test(s)</td><td>₹${(r.subtotal || 0).toFixed(2)}</td><td>₹${(r.discount || 0).toFixed(2)}</td><td><strong>₹${(r.total || 0).toFixed(2)}</strong></td>` : ''}
-    ${typeFilter === 'crpra' ? `<td>${r.crp ? r.crp + ' mg/dl' : '—'}</td><td>${r.ra ? r.ra + ' IU/mL' : '—'}</td>` : ''}
+    ${typeFilter === 'crpra' ? `<td>${r.crp ? r.crp + ' mg/L' : '—'}</td><td>${r.ra ? r.ra + ' IU/mL' : '—'}</td>` : ''}
     ${typeFilter === 'biochem' ? `<td>${r.urea ? r.urea + ' mg/dl' : '—'}</td><td>${r.creat ? r.creat + ' mg/dl' : '—'}</td><td>${r.sgot ? r.sgot + ' IU/L' : '—'}</td><td>${r.sgpt ? r.sgpt + ' IU/L' : '—'}</td>` : ''}
     ${
       typeFilter === 'all'
@@ -1506,7 +1434,7 @@ async function renderHistory(typeFilter, containerId) {
             r.type === 'bill'
               ? `<strong>₹${(r.total || 0).toFixed(2)}</strong>`
               : r.type === 'crpra'
-                ? `${r.crp ? 'CRP:' + r.crp : ''}${r.crp && r.ra ? ' / ' : ''}${r.ra ? 'RA:' + r.ra : ''}`
+                ? `${r.crp ? 'CRP:' + r.crp + ' mg/L' : ''}${r.crp && r.ra ? ' / ' : ''}${r.ra ? 'RA:' + r.ra : ''}`
                 : r.type === 'biochem'
                   ? `${r.urea ? 'Urea:' + r.urea : ''}${r.urea && r.creat ? ' · ' : ''}${r.creat ? 'Creat:' + r.creat : ''}`
                   : r.type === 'sero'
@@ -1924,13 +1852,6 @@ function handleSaveError(e) {
   return false;
 }
 
-function initSecretCode() {
-  ['sf-name', 'hf-name', 'bsf-name', 'bcf-name', 'cf-name', 'bf-name'].forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', () => checkSecretCode(el.value));
-  });
-}
-
 openDB().then(() => {
   buildTimeDropdowns();
   loadTemplates();
@@ -1940,12 +1861,7 @@ openDB().then(() => {
   initBill();
   crpraSync();
   biochemSync();
-  initSecretCode();
   initTitleCase();
-  if (localStorage.getItem('_pcl_settings') === 'true') {
-    const el = document.getElementById('settings-tab-btn');
-    if (el) el.style.display = '';
-  }
 });
 
 /* ══ BILL STATE ══ */
@@ -1961,13 +1877,36 @@ async function getNextBillNo() {
   return max + 1;
 }
 
+function todayDateInputValue() {
+  const date = new Date();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+function billDateForInput(value) {
+  if (!value) return todayDateInputValue();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  const match = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (!match) return todayDateInputValue();
+  return `${match[3]}-${match[2].padStart(2, '0')}-${match[1].padStart(2, '0')}`;
+}
+
+function billDateForDisplay(value) {
+  const match = (value || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return match ? `${match[3]}/${match[2]}/${match[1]}` : value || today;
+}
+
+const billToWords = new ToWords();
+function billAmountInWords(amount) {
+  return billToWords.convert(amount, { currency: true });
+}
+
 /* ══ Init bill form ══ */
 async function initBill() {
   currentBillNo = await getNextBillNo();
   document.getElementById('bf-billno').value = currentBillNo;
-  document.getElementById('bf-date').value = today;
-  document.getElementById('br-billno').textContent = currentBillNo;
-  document.getElementById('br-date').textContent = today;
+  document.getElementById('bf-date').value = todayDateInputValue();
   billRows = [{ test: '', price: '' }];
   renderBillRows();
   billSync();
@@ -2027,23 +1966,33 @@ function billSync() {
   document.getElementById('br-ref').textContent = ref || '—';
   const age = document.getElementById('bf-age').value.trim();
   document.getElementById('br-age').textContent = age || '—';
+  document.getElementById('br-age-field').style.display = age ? 'flex' : 'none';
+  const gender = document.getElementById('bf-gender').value;
+  document.getElementById('br-gender').textContent = gender;
+  document.getElementById('br-gender-field').style.display = gender ? 'flex' : 'none';
+  document.getElementById('br-ref-field').style.display = ref ? 'flex' : 'none';
   document.getElementById('br-contact').textContent =
     document.getElementById('bf-contact').value.trim() || '';
+  document.getElementById('br-contact-field').style.display =
+    document.getElementById('bf-contact').value.trim() ? 'flex' : 'none';
   const loc = document.getElementById('bf-location').value.trim();
   document.getElementById('br-location').textContent = loc;
-  // Keep bill number and date in sync.
+  document.getElementById('br-location-field').style.display = loc ? 'flex' : 'none';
+  // Keep date in sync.
   const curDate = document.getElementById('bf-date')?.value || today;
-  document.getElementById('br-date').textContent = curDate;
-  document.getElementById('br-billno').textContent = currentBillNo || '—';
+  document.getElementById('br-date').textContent = billDateForDisplay(curDate);
   // items table
   const tbody = document.getElementById('br-items');
   const filled = billRows.filter((r) => r.test.trim() || r.price);
   tbody.innerHTML = filled.length
     ? filled
-        .map(
-          (r) =>
-            `<tr><td>${r.test || '—'}</td><td>${r.price ? parseFloat(r.price).toFixed(2) : ''}</td></tr>`,
-        )
+        .map((r) => {
+          const testName = r.test.trim().replace(/^./, (letter) => letter.toUpperCase());
+          const amount = r.price
+            ? `₹ ${parseFloat(r.price).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+            : '';
+          return `<tr><td>${testName || '—'}</td><td>${amount}</td></tr>`;
+        })
         .join('')
     : '<tr><td colspan="2" style="text-align:center;color:#aaa;padding:14px;font-size:9.5pt">No items added yet</td></tr>';
 
@@ -2052,11 +2001,12 @@ function billSync() {
   const discount = parseFloat(document.getElementById('bf-discount').value) || 0;
   const total = Math.max(0, subtotal - discount);
 
-  document.getElementById('br-subtotal').textContent = subtotal.toFixed(2);
-  document.getElementById('br-discount').textContent = discount.toFixed(2);
-  document.getElementById('br-subtotal-less').textContent = total.toFixed(2);
+  document.querySelector('.bill-discount-row').style.display = discount > 0 ? 'flex' : 'none';
+  document.getElementById('br-discount').textContent =
+    '₹ ' + discount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   document.getElementById('br-amount-due').textContent =
     '₹ ' + total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  document.getElementById('br-amount-words').textContent = `Amount in words: ${billAmountInWords(total)}`;
 
   // form summary
   document.getElementById('bf-subtotal-display').textContent = '₹ ' + subtotal.toFixed(2);
@@ -2072,9 +2022,10 @@ function buildBillRec() {
     type: 'bill',
     billNo: currentBillNo,
     name: document.getElementById('bf-name').value.trim() || 'Unknown',
-    date: document.getElementById('bf-date').value,
+    date: billDateForDisplay(document.getElementById('bf-date').value),
     ref: document.getElementById('bf-ref').value.trim(),
     age: document.getElementById('bf-age').value.trim(),
+    gender: document.getElementById('bf-gender').value,
     contact: document.getElementById('bf-contact').value.trim(),
     location: document.getElementById('bf-location').value.trim(),
     items: [...billRows.filter((r) => r.test.trim() || r.price)],
@@ -2088,8 +2039,8 @@ function buildBillRec() {
 function loadBillRec(r) {
   currentBillNo = r.billNo || currentBillNo;
   document.getElementById('bf-billno').value = currentBillNo;
-  document.getElementById('bf-date').value = r.date || today;
-  document.getElementById('br-billno').textContent = currentBillNo;
+  document.getElementById('bf-date').value = billDateForInput(r.date);
+  document.getElementById('bf-gender').value = r.gender || '';
   if (r.items !== undefined) {
     document.getElementById('bf-name').value = r.name || '';
     document.getElementById('bf-ref').value = r.ref || '';
@@ -2117,10 +2068,11 @@ async function resetBill() {
   document.getElementById('bf-name').value = '';
   document.getElementById('bf-ref').value = '';
   document.getElementById('bf-discount').value = '';
+  document.getElementById('bf-gender').value = '';
+  document.getElementById('bf-date').value = todayDateInputValue();
   billRows = [{ test: '', price: '' }];
   currentBillNo = await getNextBillNo();
   document.getElementById('bf-billno').value = currentBillNo;
-  document.getElementById('br-billno').textContent = currentBillNo;
   renderBillRows();
   billSync();
 }
@@ -2188,8 +2140,8 @@ function crpraSync() {
   if (crp)
     rows.push({
       name: 'C R P  Test',
-      result: parseFloat(crp).toFixed(1) + '  mg/dl',
-      range: '0 - 6mg/dl',
+      result: parseFloat(crp).toFixed(1) + '  mg/L',
+      range: '0 - 6 mg/L',
     });
   if (ra)
     rows.push({
