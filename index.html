@@ -301,16 +301,8 @@
             <div class="field">
               <label>W.B.C. Count Total (Per c.m.m)</label><input type="text" id="hf-wbc" placeholder="e.g. 10,400" oninput="haemoSync()" />
             </div>
-            <div class="field">
-              <label>ESR (mm)</label>
-              <input type="text" id="hf-esr" placeholder="e.g. 10" oninput="haemoSync()" />
-              <div id="hf-esr-hint" style="font-size: 0.72rem; color: #718096; margin-top: 3px">
-                Male: 0–8 mm · Female: 0–20 mm at end of first Hr.
-              </div>
-            </div>
-
-            <div class="result-group">
-              <h3>W.B.C. Count Differential</h3>
+            <div class="result-group wbc-differential">
+              <h3>Differential</h3>
               <div class="field-row">
                 <div class="field">
                   <label>Neutrophils %</label><input type="number" id="hf-neut" placeholder="e.g. 77" min="0" max="100" oninput="
@@ -346,6 +338,13 @@
                   " />
               </div>
               <div class="diff-counter" id="diff-counter" style="display: none"></div>
+            </div>
+            <div class="field">
+              <label>ESR (mm)</label>
+              <input type="text" id="hf-esr" placeholder="e.g. 10" oninput="haemoSync()" />
+              <div id="hf-esr-hint" style="font-size: 0.72rem; color: #718096; margin-top: 3px">
+                Male: 0-8 mm · Female: 0-20 mm at end of first Hr.
+              </div>
             </div>
 
             <div class="field">

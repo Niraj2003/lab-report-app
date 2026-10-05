@@ -720,37 +720,33 @@ function haemoSync() {
         ? `<b>${label}</b>`
         : label;
     const col = opts.colon ? ' :' : '';
-    return `<div style="display:flex;font-size:11pt;padding:${opts.tight ? '1px' : '3px'} 0;line-height:1.5;font-family:inherit">
+    return `<div style="display:flex;font-size:11pt;padding:${opts.tight ? '1px' : '3px'} 0;line-height:1.5;margin:0 0 ${opts.compact ? '2px' : '8px'};font-family:inherit">
       <span style="flex:0 0 38%;font-size:11pt">${lbl}${col}</span>
       <span style="flex:0 0 22%;font-size:11pt">${result || ''}</span>
-      <span style="flex:1;font-size:11pt;color:#333">${range || ''}</span>
+      <span style="flex:1;font-size:${opts.rangeSize || '11pt'};white-space:${opts.rangeNoWrap ? 'nowrap' : 'normal'};color:#333">${range || ''}</span>
     </div>`;
   };
-
-  const gap = () => `<div style="height:10px"></div>`;
 
   // Haemoglobin
   if (hv('hf-hb')) {
     const hbVal = parseFloat(hv('hf-hb'));
     const hbDisplay = isNaN(hbVal) ? hv('hf-hb') : hbVal.toFixed(1);
-    html += line('Haemoglobin', hbDisplay + ' g/dl', 'Male : 13.5 to 18.0 g/dl');
-    html += line('', '', 'Female : 12.0 to 16.0 g/dl', { bold: false });
-    html += gap();
+    html += line('Haemoglobin', hbDisplay + ' g/dl', 'Male : 13.5-18.0 g/dl, Female : 12.0-16.0 g/dl', { rangeSize: '10pt', rangeNoWrap: true });
   }
+
+  const hasDiff = hv('hf-neut') || hv('hf-lymp') || hv('hf-eosi') || hv('hf-mono') || hv('hf-baso');
 
   // WBC
   if (hv('hf-wbc')) {
-    html += line('W.B.C. Total', hv('hf-wbc') + ' /Cu. mm.', '4000-11000 /Cu. mm.');
-    html += gap();
+    html += line('W.B.C. Total', hv('hf-wbc') + ' /Cu. mm.', '4000-11000 /Cu. mm.', { compact: hasDiff });
   }
 
   // Differential
-  const hasDiff = hv('hf-neut') || hv('hf-lymp') || hv('hf-eosi') || hv('hf-mono') || hv('hf-baso');
   if (hasDiff) {
-    html += `<div style="margin:10px 0">`;
-    html += `<div style="font-size:11pt;font-weight:700;padding:3px 0"><b>Differential :</b></div>`;
+    html += `<div style="margin:0 0 8px 18px">`;
+    html += `<div style="font-size:11pt;font-weight:700;padding:0 0 1px"><b>Differential :</b></div>`;
     const diffRow = (label, val, range) =>
-      `<div style="display:flex;font-size:11pt;padding:1px 0;line-height:1.5;font-family:inherit"><span style="flex:0 0 38%;padding-left:18px">${label}</span><span style="flex:0 0 10%;text-align:right;padding-right:8px">${val}</span><span style="flex:0 0 12%">%</span><span style="flex:1">${range}</span></div>`;
+      `<div style="display:flex;font-size:11pt;padding:0;line-height:1.3;font-family:inherit"><span style="flex:0 0 38%;padding-left:18px">${label}</span><span style="flex:0 0 10%;text-align:right;padding-right:8px">${val}</span><span style="flex:0 0 12%">%</span><span style="flex:1">${range}</span></div>`;
     if (hv('hf-neut')) html += diffRow('Neutrophils', hv('hf-neut'), '50 - 70%');
     if (hv('hf-lymp')) html += diffRow('Lymphocytes', hv('hf-lymp'), '20 - 40%');
     if (hv('hf-eosi')) html += diffRow('Eosinophils', hv('hf-eosi'), '1 - 6%');
@@ -767,27 +763,25 @@ function haemoSync() {
 
   // ESR
   if (hv('hf-esr')) {
-    html += gap();
-    html += `<div style="display:flex;font-size:11pt;padding:3px 0;line-height:1.5;font-family:inherit">
+    html += `<div style="margin:0 0 8px">
+    <div style="display:flex;font-size:11pt;padding:3px 0;line-height:1.5;font-family:inherit">
       <span style="flex:0 0 38%"><b>ESR</b></span>
       <span style="flex:0 0 22%">${hv('hf-esr')} mm.</span>
-      <span style="flex:1;white-space:nowrap">Male 0 - 8 mm. at the end of first Hr.</span>
+      <span style="flex:1;font-size:10pt;white-space:nowrap">Male 0 - 8 mm. at the end of first Hr.</span>
     </div>`;
     html += `<div style="display:flex;font-size:11pt;padding:1px 0;line-height:1.5;font-family:inherit">
-      <span style="flex:0 0 38%">(Westergreen's method)</span>
+      <span style="flex:0 0 38%;font-size:10pt">(Westergreen's method)</span>
       <span style="flex:0 0 22%"></span>
-      <span style="flex:1;white-space:nowrap">Female 0 - 20 mm. at the end of first Hr.</span>
+      <span style="flex:1;font-size:10pt;white-space:nowrap">Female 0 - 20 mm. at the end of first Hr.</span>
     </div>`;
-    html += gap();
+    html += `</div>`;
   }
 
   // Blood Sugar
   if (hv('hf-sugar')) {
     const sugarRaw = parseFloat(hv('hf-sugar'));
     const sugarVal = isNaN(sugarRaw) ? hv('hf-sugar') : sugarRaw.toFixed(1);
-    html += `<div style="margin:10px 0">`;
     html += line('Blood Sugar (Random)', sugarVal + ' mg/dl', '70-140 mg/dl', { underline: true });
-    html += `</div>`;
   }
 
   // Urine Exam
@@ -795,7 +789,7 @@ function haemoSync() {
     usg = hv('hf-usg'),
     mic = hv('hf-mic');
   if (alb || usg || mic) {
-    html += `<div style="margin:10px 0">`;
+    html += `<div style="margin:0 0 8px">`;
     html += `<div style="display:flex;font-size:11pt;padding:3px 0;line-height:1.5;font-family:inherit">
       <span style="flex:0 0 38%"><b>Urine Exam</b></span>
       <span style="flex:1;padding-left:16px">
@@ -822,8 +816,7 @@ function haemoSync() {
 
   // HCV
   if (hv('hf-hcv')) {
-    html += `<div style="height:6px"></div>`;
-    html += `<div style="display:flex;font-size:11pt;padding:3px 0;line-height:1.5;font-family:inherit">
+    html += `<div style="display:flex;font-size:11pt;padding:3px 0;margin:0 0 8px;line-height:1.5;font-family:inherit">
     <span style="flex:0 0 38%"><b><u>HCV Test</u></b></span>
     <span style="flex:0 0 22%">${hv('hf-hcv')}</span>
     <span style="flex:1;white-space:nowrap;font-size:9pt;line-height:1.6;color:#333">[ Immunochromatography Method ]</span>
@@ -832,12 +825,12 @@ function haemoSync() {
 
   // Australia Antigen
   if (hv('hf-aat')) {
-    html += `<div style="display:flex;font-size:11pt;padding:3px 0;margin:10px 0;line-height:1.5;font-family:inherit"><span style="flex:0 0 38%"><b><u>Australia Antigen Test</u></b></span><span style="flex:0 0 22%">${hv('hf-aat')}</span><span style="flex:1;white-space:nowrap;font-size:9pt;line-height:1.6;color:#333">[ Immunochromatography Method ]</span></div>`;
+    html += `<div style="display:flex;font-size:11pt;padding:3px 0;margin:0 0 8px;line-height:1.5;font-family:inherit"><span style="flex:0 0 38%"><b><u>Australia Antigen Test</u></b></span><span style="flex:0 0 22%">${hv('hf-aat')}</span><span style="flex:1;white-space:nowrap;font-size:9pt;line-height:1.6;color:#333">[ Immunochromatography Method ]</span></div>`;
   }
 
   // HIV
   if (hv('hf-hiv')) {
-    html += `<div style="display:flex;font-size:11pt;padding:3px 0;margin:10px 0;line-height:1.5;font-family:inherit"><span style="flex:0 0 38%;font-size:11pt"><b><u>H.I.V Antibody ( HIV-I & II )</u></b></span><span style="flex:0 0 22%;font-size:11pt;white-space:nowrap">${hv('hf-hiv')}</span><span style="flex:1;font-size:9pt;line-height:1.6;color:#333">(This is a rapid diagnostic Test.<br>Done by Device mtd.)</span></div>`;
+    html += `<div style="display:flex;font-size:11pt;padding:3px 0;margin:0 0 8px;line-height:1.5;font-family:inherit"><span style="flex:0 0 38%;font-size:11pt"><b><u>H.I.V Antibody ( HIV-I & II )</u></b></span><span style="flex:0 0 22%;font-size:11pt;white-space:nowrap">${hv('hf-hiv')}</span><span style="flex:1;font-size:9pt;line-height:1.6;color:#333">(This is a rapid diagnostic Test.<br>Done by Device mtd.)</span></div>`;
   }
 
   html += `<div class="report-closing"><span>Thanks !</span><span class="report-closing-signature">SIGNATURE</span></div>`;
